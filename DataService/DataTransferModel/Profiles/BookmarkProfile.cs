@@ -8,16 +8,19 @@ using DataLayer.DatabaseModel;
 
 namespace DataLayer.DataTransferModel.Profiles
 {
+
+    
     public class BookmarkProfile : Profile
     {
         public BookmarkProfile()
         {
-            CreateMap<BookmarkName, BookmarkElement>();
-            CreateMap<BookmarkTitle, BookmarkElement>();
-            CreateMap<BookmarkName, BookmarkListElement>()
-                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.NConst));
-            CreateMap<BookmarkTitle, BookmarkListElement>()
-                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TConst));
+            //CreateMap<BookmarkName, BookmarkElement>();
+            //CreateMap<BookmarkTitle, BookmarkElement>();
+            //CreateMap<BookmarkName, BookmarkListElement>()
+            //    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.NConst));
+            //CreateMap<BookmarkTitle, BookmarkListElement>()
+            //    .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.TConst));
         }
     }
+
 }
