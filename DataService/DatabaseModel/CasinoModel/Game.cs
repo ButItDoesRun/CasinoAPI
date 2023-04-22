@@ -16,7 +16,7 @@ namespace DataLayer.DatabaseModel.CasinoModel
 
         //references
         public MoneyPot? MoneyPot { get; set; }
-        public IList<Transaction>? Transaction { get; set; }
+        public IList<Bet>? Bet { get; set; }
 
     }
 }

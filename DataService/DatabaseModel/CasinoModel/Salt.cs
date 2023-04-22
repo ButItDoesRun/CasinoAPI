@@ -12,6 +12,6 @@ namespace DataLayer.DatabaseModel.CasinoModel
         public string SSalt { get; set; }
 
         //references
-        public User User { get; set; }
+        public Customer Customer { get; set; }
     }
 }

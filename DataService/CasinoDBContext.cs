@@ -25,8 +25,8 @@ namespace DataLayer
 
         /* CASINO MODEL */
         public DbSet<Game> Games { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Bet> Bets { get; set; }
         public DbSet<Salt> Salts { get; set; }
         public DbSet<MoneyPot> MoneyPots { get; set; }
 
@@ -71,29 +71,29 @@ namespace DataLayer
             modelBuilder.Entity<MoneyPot>().Property(x => x.Amount).HasColumnName("amount");
 
             //USERS
-            modelBuilder.Entity<User>().ToTable("user");
-            modelBuilder.Entity<User>().HasKey(x => new { x.Uid }).HasName("user_pkey");
-            modelBuilder.Entity<User>().Property(x => x.Uid).HasColumnName("uid");
-            modelBuilder.Entity<User>().Property(x => x.Name).HasColumnName("name");
-            modelBuilder.Entity<User>().Property(x => x.BirthDate).HasColumnName("birthdate");
-            modelBuilder.Entity<User>().Property(x => x.Password).HasColumnName("password");
-            modelBuilder.Entity<User>().Property(x => x.Balance).HasColumnName("balance");
+            modelBuilder.Entity<Customer>().ToTable("customer");
+            modelBuilder.Entity<Customer>().HasKey(x => new { x.Uid }).HasName("customer_pkey");
+            modelBuilder.Entity<Customer>().Property(x => x.Uid).HasColumnName("uid");
+            modelBuilder.Entity<Customer>().Property(x => x.Name).HasColumnName("name");
+            modelBuilder.Entity<Customer>().Property(x => x.BirthDate).HasColumnName("birthdate");
+            modelBuilder.Entity<Customer>().Property(x => x.Password).HasColumnName("password");
+            modelBuilder.Entity<Customer>().Property(x => x.Balance).HasColumnName("balance");
 
-            //TRANSACTIONS
-            modelBuilder.Entity<Transaction>().ToTable("transaction");
-            modelBuilder.Entity<Transaction>().HasKey(x => new { x.Uid, x.Gid }).HasName("transaction_pkey");
-            modelBuilder.Entity<Transaction>().Property(x => x.Uid).HasColumnName("uid");
-            modelBuilder.Entity<Transaction>().Property(x => x.Gid).HasColumnName("gid");
-            modelBuilder.Entity<Transaction>()
+            //BETS
+            modelBuilder.Entity<Bet>().ToTable("bets");
+            modelBuilder.Entity<Bet>().HasKey(x => new { x.Uid, x.Gid }).HasName("bets_pkey");
+            modelBuilder.Entity<Bet>().Property(x => x.Uid).HasColumnName("uid");
+            modelBuilder.Entity<Bet>().Property(x => x.Gid).HasColumnName("gid");
+            modelBuilder.Entity<Bet>()
                 .HasOne(x => x.Game)
-                .WithMany(x => x.Transaction)
+                .WithMany(x => x.Bet)
                 .HasForeignKey(x => x.Gid);
-            modelBuilder.Entity<Transaction>()
-                .HasOne(x => x.User)
-                .WithMany(x => x.Transaction)
+            modelBuilder.Entity<Bet>()
+                .HasOne(x => x.Customer)
+                .WithMany(x => x.Bet)
                 .HasForeignKey(x => x.Uid);
-            modelBuilder.Entity<Transaction>().Property(x => x.Amount).HasColumnName("amount");
-            modelBuilder.Entity<Transaction>().Property(x => x.Date).HasColumnName("date");
+            modelBuilder.Entity<Bet>().Property(x => x.Amount).HasColumnName("amount");
+            modelBuilder.Entity<Bet>().Property(x => x.Date).HasColumnName("date");
 
 
             //SALT
@@ -101,7 +101,7 @@ namespace DataLayer
             modelBuilder.Entity<Salt>().HasKey(x => new { x.Uid }).HasName("salt_pkey");
             modelBuilder.Entity<Salt>().Property(x => x.SSalt).HasColumnName("salt");
             modelBuilder.Entity<Salt>()
-               .HasOne(x => x.User)
+               .HasOne(x => x.Customer)
                .WithOne(x => x.Salt)
                .HasForeignKey<Salt>(x => x.Uid);
 

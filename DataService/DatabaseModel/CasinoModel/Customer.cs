@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.DatabaseModel.CasinoModel
 {
-    public class User
+    public class Customer
     {
         public int? Uid { get; set; }
         public string? Name { get; set; }
@@ -15,7 +15,7 @@ namespace DataLayer.DatabaseModel.CasinoModel
         public float? Balance { get; set; }   
         
         //references
-        public IList<Transaction>? Transaction { get; set; }
+        public IList<Bet>? Bet { get; set; }
         public Salt? Salt { get; set; }
     }
 }
