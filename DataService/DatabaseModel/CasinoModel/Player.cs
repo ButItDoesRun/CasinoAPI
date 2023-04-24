@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataLayer.DatabaseModel.CasinoModel
 {
-    public class Customer
+    public class Player
     {
-        public int? Uid { get; set; }
-        public string? Name { get; set; }
+        public string? PlayerName { get; set; }
         public DateOnly BirthDate { get; set; }
         public string? Password { get; set; }
         public float? Balance { get; set; }   

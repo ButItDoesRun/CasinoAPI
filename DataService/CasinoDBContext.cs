@@ -24,11 +24,11 @@ namespace DataLayer
         //const string ConnectionString = "host=localhost;db=imdb;uid=postgres;pwd=Bqm33etj";
 
         /* CASINO MODEL */
-        public DbSet<Game> Games { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Bet> Bets { get; set; }
-        public DbSet<Salt> Salts { get; set; }
-        public DbSet<MoneyPot> MoneyPots { get; set; }
+        public DbSet<Game>? Games { get; set; }
+        public DbSet<Player>? Players { get; set; }
+        public DbSet<Bet>? Bets { get; set; }
+        public DbSet<Salt>? Salts { get; set; }
+        public DbSet<MoneyPot>? MoneyPots { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -70,40 +70,39 @@ namespace DataLayer
             modelBuilder.Entity<MoneyPot>().Property(x => x.Pid).HasColumnName("pid");
             modelBuilder.Entity<MoneyPot>().Property(x => x.Amount).HasColumnName("amount");
 
-            //USERS
-            modelBuilder.Entity<Customer>().ToTable("customer");
-            modelBuilder.Entity<Customer>().HasKey(x => new { x.Uid }).HasName("customer_pkey");
-            modelBuilder.Entity<Customer>().Property(x => x.Uid).HasColumnName("uid");
-            modelBuilder.Entity<Customer>().Property(x => x.Name).HasColumnName("name");
-            modelBuilder.Entity<Customer>().Property(x => x.BirthDate).HasColumnName("birthdate");
-            modelBuilder.Entity<Customer>().Property(x => x.Password).HasColumnName("password");
-            modelBuilder.Entity<Customer>().Property(x => x.Balance).HasColumnName("balance");
+            //PLAYERS
+            modelBuilder.Entity<Player>().ToTable("player");
+            modelBuilder.Entity<Player>().HasKey(x => new { x.PlayerName }).HasName("player_pkey");
+            modelBuilder.Entity<Player>().Property(x => x.PlayerName).HasColumnName("playername");
+            modelBuilder.Entity<Player>().Property(x => x.BirthDate).HasColumnName("birthdate");
+            modelBuilder.Entity<Player>().Property(x => x.Password).HasColumnName("password");
+            modelBuilder.Entity<Player>().Property(x => x.Balance).HasColumnName("balance");
 
             //BETS
             modelBuilder.Entity<Bet>().ToTable("bets");
-            modelBuilder.Entity<Bet>().HasKey(x => new { x.Uid, x.Gid }).HasName("bets_pkey");
-            modelBuilder.Entity<Bet>().Property(x => x.Uid).HasColumnName("uid");
+            modelBuilder.Entity<Bet>().HasKey(x => new { x.PlayerName, x.Gid }).HasName("bets_pkey");
+            modelBuilder.Entity<Bet>().Property(x => x.PlayerName).HasColumnName("playername");
             modelBuilder.Entity<Bet>().Property(x => x.Gid).HasColumnName("gid");
             modelBuilder.Entity<Bet>()
                 .HasOne(x => x.Game)
                 .WithMany(x => x.Bet)
                 .HasForeignKey(x => x.Gid);
             modelBuilder.Entity<Bet>()
-                .HasOne(x => x.Customer)
+                .HasOne(x => x.Player)
                 .WithMany(x => x.Bet)
-                .HasForeignKey(x => x.Uid);
+                .HasForeignKey(x => x.PlayerName);
             modelBuilder.Entity<Bet>().Property(x => x.Amount).HasColumnName("amount");
             modelBuilder.Entity<Bet>().Property(x => x.Date).HasColumnName("date");
 
 
             //SALT
             modelBuilder.Entity<Salt>().ToTable("salt");
-            modelBuilder.Entity<Salt>().HasKey(x => new { x.Uid }).HasName("salt_pkey");
+            modelBuilder.Entity<Salt>().HasKey(x => new { x.PlayerName }).HasName("salt_pkey");
             modelBuilder.Entity<Salt>().Property(x => x.SSalt).HasColumnName("salt");
             modelBuilder.Entity<Salt>()
-               .HasOne(x => x.Customer)
+               .HasOne(x => x.Player)
                .WithOne(x => x.Salt)
-               .HasForeignKey<Salt>(x => x.Uid);
+               .HasForeignKey<Salt>(x => x.PlayerName);
 
 
         }

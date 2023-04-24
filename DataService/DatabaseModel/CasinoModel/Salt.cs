@@ -8,10 +8,10 @@ namespace DataLayer.DatabaseModel.CasinoModel
 {
     public class Salt
     {
-        public int Uid { get; set; }
-        public string SSalt { get; set; }
+        public string? PlayerName { get; set; }
+        public string? SSalt { get; set; }
 
         //references
-        public Customer Customer { get; set; }
+        public Player? Player { get; set; }
     }
 }

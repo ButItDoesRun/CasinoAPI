@@ -8,7 +8,7 @@ namespace DataLayer.DatabaseModel.CasinoModel
 {
     public class Bet
     {
-        public int? Uid { get; set; }
+        public string? PlayerName { get; set; }
         public int? Gid { get; set; }
         public float? Amount { get; set; }
         public DateTime Date { get; set; }
@@ -16,7 +16,7 @@ namespace DataLayer.DatabaseModel.CasinoModel
 
         //references
         public Game? Game { get; set; }
-        public Customer? Customer { get; set; }  
+        public Player? Player { get; set; }  
 
     }
 }
