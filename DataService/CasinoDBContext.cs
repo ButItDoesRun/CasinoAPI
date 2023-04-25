@@ -15,10 +15,10 @@ namespace DataLayer
     public class CasinoDBContext : DbContext
     {
         //ruc server 
-        const string ConnectionString = "host=cit.ruc.dk;db=cit11;uid=cit11;pwd=nICrojAxtDeX";
+        //const string ConnectionString = "host=cit.ruc.dk;db=cit11;uid=cit11;pwd=nICrojAxtDeX";
 
         //siemje - localhost database
-        //const string ConnectionString = "host=localhost;db=imdb;uid=postgres;pwd=postgres";
+        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=postgres";
 
         //atru - localhost database
         //const string ConnectionString = "host=localhost;db=imdb;uid=postgres;pwd=Bqm33etj";
