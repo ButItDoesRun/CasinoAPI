@@ -33,6 +33,7 @@ namespace WebServer.Controllers
             var total = _dataServiceGames.GetNumberOfGames();
 
             return Ok(DefaultPagingModel(page, pageSize, total, gamesModel, nameof(GetGames)));
+
         }
 
 

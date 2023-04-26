@@ -16,6 +16,8 @@ builder.Services.AddControllers();
 //DATASERVICES
 /* CASINO FRAMEWORK */
 builder.Services.AddSingleton<IDataservice, Dataservice>();
+builder.Services.AddSingleton<IDataserviceGames, DataserviceGames>();
+
 
 //Other services
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
