@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataLayer.DatabaseModel.CasinoModel
+namespace DataLayer.DataTransferModel
 {
-    public class MoneyPot
+    public class MoneyPotListElement
     {
         public int Pid { get; set; }
+        public int? Gid { get; set; }
         public double Amount { get; set; }
+        public string? GameName { get; set; }
 
-        //references
-        public Game? Game { get; set; }
     }
 }

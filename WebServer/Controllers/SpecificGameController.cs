@@ -9,7 +9,7 @@ using WebServer.Model;
 
 namespace WebServer.Controllers
 {
-    [Route("api/game")]
+    [Route("casino/game")]
     [ApiController]
     public class SpecificGameController : BaseController
     {

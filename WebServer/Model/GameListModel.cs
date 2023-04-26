@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace WebServer.Model 
 { 
-    public class GamesModel
+    public class GameListModel
     {
         public string? Name { get; set; }
         public string? Url { get; set; }

@@ -7,7 +7,7 @@ using WebServer.Model;
 
 namespace WebServer.Controllers
 {
-    [Route("api/games")]
+    [Route("casino/games")]
     [ApiController]
     public class GamesController : BaseController
     {
@@ -37,13 +37,13 @@ namespace WebServer.Controllers
         }
 
 
-        public IList<GamesModel> CreateGamesModel(IList<GameListElement> games)
+        public IList<GameListModel> CreateGamesModel(IList<GameListElement> games)
         {
-            var gamesModel = new List<GamesModel>();
+            var gamesModel = new List<GameListModel>();
 
             foreach (var game in games)
             {
-                var gameModelElement = _mapper.Map<GamesModel>(game);
+                var gameModelElement = _mapper.Map<GameListModel>(game);
                 gameModelElement.Url = _generator.GetUriByName(HttpContext,
                         nameof(GamesController.GetGames),
                         new { id = game.Gid });
