@@ -2,10 +2,16 @@ namespace CasinoTest
 {
     public class DataserviceTests
     {
-        [Fact]
-        public void Test1()
-        {
+        //Testing whether our repository methods return expected values
 
-        }
+        /*
+         [Fact]
+         public void GetGames()
+         {
+             var service = new Dataservice();
+             var gameNames = service.GetGameById(41414142);
+             Assert.Null(gameNames);
+         }
+         */
     }
 }
