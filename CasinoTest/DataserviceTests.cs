@@ -1,6 +1,6 @@
 namespace CasinoTest
 {
-    public class UnitTest1
+    public class DataserviceTests
     {
         [Fact]
         public void Test1()
