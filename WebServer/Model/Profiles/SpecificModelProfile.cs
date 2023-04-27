@@ -10,6 +10,7 @@ namespace WebServer.Model.Profiles
             CreateMap<SpecificGame, SpecificGameModel>();
             CreateMap<SpecificPlayer, SpecificPlayerModel>();
             CreateMap<SpecificMoneyPot, SpecificMoneyPotModel>();
+            CreateMap<SpecificSalt, SpecificSaltModel>();
         }
     }
 }

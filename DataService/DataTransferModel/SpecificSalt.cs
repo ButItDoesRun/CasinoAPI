@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataLayer.DataTransferModel
 {
-    internal class SpecificSalt
+    public class SpecificSalt
     {
+        public string? PlayerName { get; set; }
+        public string? SSalt { get; set; }
     }
 }
