@@ -18,11 +18,12 @@ namespace DataLayer
         //const string ConnectionString = "host=cit.ruc.dk;db=cit11;uid=cit11;pwd=nICrojAxtDeX";
 
         //siemje - localhost database
-        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=postgres";
+        //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=postgres";
 
         //atru - localhost database
         //const string ConnectionString = "host=localhost;db=imdb;uid=postgres;pwd=Bqm33etj";
 
+        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=password";
         /* CASINO MODEL */
         public DbSet<Game>? Games { get; set; }
         public DbSet<Player>? Players { get; set; }
@@ -33,7 +34,7 @@ namespace DataLayer
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
+            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
             optionsBuilder.UseNpgsql(ConnectionString);
         }
 

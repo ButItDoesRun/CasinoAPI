@@ -11,7 +11,10 @@ namespace DataLayer.DataServiceInterfaces
     {
 
         public SpecificGame GetGameById(int gid);
+        //public SpecificMoneyPot GetMoneyPotById(int pid);
+        // public SpecificMoneyPot GetMoneyPotByGameId(int gid);
 
+        public SpecificPlayer GetPlayerByName(String name);
 
     }
 }
