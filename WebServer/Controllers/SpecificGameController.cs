@@ -9,21 +9,21 @@ using WebServer.Model;
 
 namespace WebServer.Controllers
 {
-    [Route("api/game")]
+    [Route("casino/game")]
     [ApiController]
     public class SpecificGameController : BaseController
     {
-        private readonly IDataservice _dataService; 
+        private readonly IDataserviceGame _dataService; 
 
-        public SpecificGameController(IDataservice dataService, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public SpecificGameController(IDataserviceGame dataServiceGame, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
-            _dataService = dataService;
+            _dataService = dataServiceGame;
         }
 
         [HttpGet("{id}", Name = nameof(GetGameById))]
-        public IActionResult GetGameById(int id)
+        public IActionResult GetGameById(int gid)
         {
-            var specificGame = _dataService.GetGameById(id);
+            var specificGame = _dataService.GetGameById(gid);
             if (specificGame == null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace WebServer.Controllers
         {
             var model = _mapper.Map<SpecificGameModel>(game);
 
-            model.Url = GenerateLink(nameof(GetGameById), new { id = game.Gid });
+            model.Url = GenerateLink(nameof(GetGameById), new { gid = game.Gid });
 
             return model;
         }

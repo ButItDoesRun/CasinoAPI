@@ -16,20 +16,6 @@ namespace DataLayer
     public class Dataservice :IDataservice
     {
 
-        public SpecificGame GetGameById(int gid)
-        {
-            using var db = new CasinoDBContext();
-            var game = db.Games
-                .Select(x => new SpecificGame
-                {
-                    Gid = x.Gid,
-                    Name = x.Name
-                })
-                .FirstOrDefault(x => x.Gid == gid);
-
-            return game;
-        }
-
        /* public SpecificMoneyPot GetMoneyPotById(int pid)
         {
             using var db = new CasinoDBContext();
@@ -59,6 +45,8 @@ namespace DataLayer
 
             return player;
         }
+
+       
 
     }
 }

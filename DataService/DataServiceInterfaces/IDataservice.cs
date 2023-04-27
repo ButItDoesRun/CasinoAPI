@@ -9,8 +9,6 @@ namespace DataLayer.DataServiceInterfaces
 {
     public interface IDataservice
     {
-
-        public SpecificGame GetGameById(int gid);
         //public SpecificMoneyPot GetMoneyPotById(int pid);
         // public SpecificMoneyPot GetMoneyPotByGameId(int gid);
 
