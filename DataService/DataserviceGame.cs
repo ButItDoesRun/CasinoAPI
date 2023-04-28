@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 
 namespace DataLayer
 {
-    public class DataserviceGame
+    public class DataserviceGame : IDataserviceGame
     {
-        public SpecificGame GetGameByGid(int gid)
+        public SpecificGame GetGameById(int gid)
         {
             using var db = new CasinoDBContext();
             var game = db.Games

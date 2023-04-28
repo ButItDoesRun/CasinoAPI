@@ -1,4 +1,5 @@
-﻿using DataLayer.DataTransferModel;
+﻿using DataLayer.DataServiceInterfaces;
+using DataLayer.DataTransferModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer
 {
-    public class DataserviceSalt
+    public class DataserviceSalt : IDataserviceSalt
     {
         public SpecificSalt GetSaltByName(string name)
         {
