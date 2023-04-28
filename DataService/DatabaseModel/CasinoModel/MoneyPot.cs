@@ -9,6 +9,7 @@ namespace DataLayer.DatabaseModel.CasinoModel
     public class MoneyPot
     {
         public int Pid { get; set; }
+        public int Gid { get; set; }
         public double Amount { get; set; }
 
         //references
