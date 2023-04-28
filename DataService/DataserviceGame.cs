@@ -26,5 +26,45 @@ namespace DataLayer
 
             return game;
         }
+
+        public SpecificGame CreateGame(string name, float minbet, float maxbet, float? potamount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SpecificGame CreateGame(string name, float minbet, float maxbet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteGame(int gid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateGame(int gid, string name, float minbet, float maxbet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SpecificMoneyPot AddGamePot(int gid, float amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateGamePot(int gid, float amount)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteGamePot(int gid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteGamePots(int gid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
