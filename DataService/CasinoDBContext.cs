@@ -21,9 +21,10 @@ namespace DataLayer
         //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=postgres";
 
         //atru - localhost database
-        //const string ConnectionString = "host=localhost;db=imdb;uid=postgres;pwd=Bqm33etj";
+        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=Bqm33etj";
 
-        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=password";
+        //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=password";
+
         /* CASINO MODEL */
         public DbSet<Game>? Games { get; set; }
         public DbSet<Player>? Players { get; set; }
@@ -69,7 +70,12 @@ namespace DataLayer
             modelBuilder.Entity<MoneyPot>().ToTable("moneypot");
             modelBuilder.Entity<MoneyPot>().HasKey(x => new { x.Pid }).HasName("moneypot_pkey");
             modelBuilder.Entity<MoneyPot>().Property(x => x.Pid).HasColumnName("pid");
+            modelBuilder.Entity<MoneyPot>().Property(x => x.Gid).HasColumnName("gid");
             modelBuilder.Entity<MoneyPot>().Property(x => x.Amount).HasColumnName("amount");
+            modelBuilder.Entity<MoneyPot>()
+                .HasOne(x => x.Game)
+                .WithOne(x => x.MoneyPot)
+                .HasForeignKey<Game>(x => x.Gid);
 
             //PLAYERS
             modelBuilder.Entity<Player>().ToTable("player");
