@@ -12,11 +12,8 @@ namespace DataLayer.DataTransferModel.Profiles
     {
         public ListModelProfile()
         {
-            CreateMap<GameListElement,GameListModel>();
             CreateMap<PlayerListElement, PlayerListModel>();
             CreateMap<BetListElement, BetListModel>();
-            CreateMap<MoneyPotListElement, MoneyPotListModel>();
-
         }
     }
 }
