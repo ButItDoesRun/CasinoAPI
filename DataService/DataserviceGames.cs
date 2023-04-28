@@ -10,6 +10,7 @@ namespace DataLayer
 {
     public class DataserviceGames : IDataserviceGames
     {
+        /*
 
         public IList<GameListElement> GetGames(int page, int pageSize)
         {
@@ -39,5 +40,6 @@ namespace DataLayer
             return db.Games
                 .Select(x => new GameListElement {}).Count();
         }
+        */
     }
 }

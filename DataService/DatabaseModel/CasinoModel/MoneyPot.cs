@@ -10,7 +10,7 @@ namespace DataLayer.DatabaseModel.CasinoModel
     {
         public int Pid { get; set; }
         public int Gid { get; set; }
-        public float? Amount { get; set; }
+        public double? Amount { get; set; }
 
         //references
         public Game? Game { get; set; }

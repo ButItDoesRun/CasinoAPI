@@ -27,6 +27,7 @@ namespace DataLayer
 
         /* CASINO MODEL */
         public DbSet<Game>? Games { get; set; }
+        public DbSet<GameRecord> GamesRecords { get; set; }
         public DbSet<Player>? Players { get; set; }
         public DbSet<Bet>? Bets { get; set; }
         public DbSet<Salt>? Salts { get; set; }
@@ -60,11 +61,19 @@ namespace DataLayer
             modelBuilder.Entity<Game>().Property(x => x.MinBet).HasColumnName("minbet");
             modelBuilder.Entity<Game>().Property(x => x.MaxBet).HasColumnName("maxbet");
             modelBuilder.Entity<Game>().Property(x => x.Pid).HasColumnName("pid");
-
             modelBuilder.Entity<Game>()
                 .HasOne(x => x.MoneyPot)
                 .WithOne(x => x.Game)
                 .HasForeignKey<Game>(x => x.Pid);
+
+            //GAME RECORDS
+            modelBuilder.Entity<GameRecord>().HasNoKey();
+            modelBuilder.Entity<GameRecord>().Property(x => x.Gid).HasColumnName("gid");
+            modelBuilder.Entity<GameRecord>().Property(x => x.Name).HasColumnName("name");
+            modelBuilder.Entity<GameRecord>().Property(x => x.MinBet).HasColumnName("minbet");
+            modelBuilder.Entity<GameRecord>().Property(x => x.MaxBet).HasColumnName("maxbet");
+            modelBuilder.Entity<GameRecord>().Property(x => x.Pid).HasColumnName("pid");
+            modelBuilder.Entity<GameRecord>().Property(x => x.Amount).HasColumnName("amount");
 
             //MONEYPOTS
             modelBuilder.Entity<MoneyPot>().ToTable("moneypot");

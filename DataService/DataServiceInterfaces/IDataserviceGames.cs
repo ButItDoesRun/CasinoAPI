@@ -9,8 +9,9 @@ namespace DataLayer.DataServiceInterfaces
 {
     public interface IDataserviceGames
     {
-
+        /*
         IList<GameListElement> GetGames(int page, int pageSize);
         public int GetNumberOfGames();
+        */
     }
 }

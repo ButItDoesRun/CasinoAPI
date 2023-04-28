@@ -10,10 +10,10 @@ namespace DataLayer.DataTransferModel
     {
         public int Gid { get; set; }
         public string? Name { get; set; }
-        public float? MinBet { get; set; }
-        public float? MaxBet { get; set; }
+        public double? MinBet { get; set; }
+        public double? MaxBet { get; set; }
         public int? Pid { get; set; }
-        public float? PotAmount { get; set; }
+        public double? PotAmount { get; set; }
 
     }
 }
