@@ -10,8 +10,8 @@ namespace DataLayer.DatabaseModel.CasinoModel
     {
         public int Gid { get; set; }
         public string? Name { get; set; }
-        public float? MinBet { get; set; }
-        public float? MaxBet { get; set; }
+        public double? MinBet { get; set; }
+        public double? MaxBet { get; set; }
         public int? Pid { get; set; }
 
         //references
