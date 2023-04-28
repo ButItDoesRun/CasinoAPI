@@ -9,6 +9,7 @@ namespace DataLayer.DataTransferModel
     public class SpecificMoneyPot
     {
         public int Pid { get; set; }
+        public int Gid { get; set; }
         public double Amount { get; set; }
     }
 }
