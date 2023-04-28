@@ -100,6 +100,7 @@ namespace DataLayer
             modelBuilder.Entity<Salt>().ToTable("salt");
             modelBuilder.Entity<Salt>().HasKey(x => new { x.PlayerName }).HasName("salt_pkey");
             modelBuilder.Entity<Salt>().Property(x => x.SSalt).HasColumnName("salt");
+            modelBuilder.Entity<Salt>().Property(x => x.PlayerName).HasColumnName("playername");
             modelBuilder.Entity<Salt>()
                .HasOne(x => x.Player)
                .WithOne(x => x.Salt)
