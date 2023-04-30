@@ -27,7 +27,7 @@ namespace DataLayer
 
         /* CASINO MODEL */
         public DbSet<Game>? Games { get; set; }
-        public DbSet<GameRecord> GamesRecords { get; set; }
+        public DbSet<GameRecord>? GamesRecords { get; set; }
         public DbSet<Player>? Players { get; set; }
         public DbSet<Bet>? Bets { get; set; }
         public DbSet<Salt>? Salts { get; set; }
