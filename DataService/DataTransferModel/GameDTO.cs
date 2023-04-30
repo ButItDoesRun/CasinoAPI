@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.DataTransferModel
 {
-    public class SpecificGame
+    public class GameDTO
     {
         public int Gid { get; set; }
         public string? Name { get; set; }
