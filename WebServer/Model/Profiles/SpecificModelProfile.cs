@@ -7,7 +7,7 @@ namespace WebServer.Model.Profiles
     {
         public SpecificModelProfile()
         {
-            CreateMap<SpecificPlayer, SpecificPlayerModel>();
+            CreateMap<PlayerDTO, PlayerModel>();
             CreateMap<SpecificSalt, SpecificSaltModel>();
         }
     }

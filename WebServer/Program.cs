@@ -15,12 +15,9 @@ builder.Services.AddControllers();
 
 //DATASERVICES
 /* CASINO FRAMEWORK */
-builder.Services.AddSingleton<IDataservice, Dataservice>();
 builder.Services.AddSingleton<IDataserviceGames, DataserviceGames>();
-builder.Services.AddSingleton<IDataservicePlayers, DataservicePlayers>();
+builder.Services.AddSingleton<IDataservicePlayer, DataservicePlayer>();
 builder.Services.AddSingleton<IDataserviceBets, DataserviceBets>();
-
-builder.Services.AddSingleton<IDataserviceSalt, DataserviceSalt>();
 builder.Services.AddSingleton<IDataserviceGame, DataserviceGame>();
 
 //Other services

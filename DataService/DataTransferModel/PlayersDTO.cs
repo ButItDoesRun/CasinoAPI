@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.DataTransferModel
 {
-    public class PlayerListElement
+    public class PlayersDTO
     {
         public string? PlayerName { get; set; }
         public double? Balance { get; set; }
