@@ -81,7 +81,8 @@ namespace DataLayer
 
             //BETS
             modelBuilder.Entity<Bet>().ToTable("bets");
-            modelBuilder.Entity<Bet>().HasKey(x => new { x.PlayerName, x.Gid }).HasName("bets_pkey");
+            modelBuilder.Entity<Bet>().Property(x => x.Bid).HasColumnName("bid");
+            modelBuilder.Entity<Bet>().HasKey(x => new { x.Bid }).HasName("bets_pkey");
             modelBuilder.Entity<Bet>().Property(x => x.PlayerName).HasColumnName("playername");
             modelBuilder.Entity<Bet>().Property(x => x.Gid).HasColumnName("gid");
             modelBuilder.Entity<Bet>()
