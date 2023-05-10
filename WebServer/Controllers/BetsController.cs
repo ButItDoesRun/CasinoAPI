@@ -37,6 +37,22 @@ namespace WebServer.Controllers
 
         }
 
+        [HttpGet("Player/game", Name = nameof(GetBetsFromPlayerAndGame))]
+        public IActionResult GetBetsFromPlayerAndGame(String playername, int gid, int page = 0, int pageSize = 20)
+        {
+            var bets = _dataServiceBets.GetBetsFromPlayerAndGame(page, pageSize, playername, gid);
+            if (bets == null)
+            {
+                return NotFound();
+            }
+            var betsModel = CreateBetsModel(bets);
+
+            var total = _dataServiceBets.GetNumberOfBets();
+
+            return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromPlayerAndGame)));
+
+        }
+
 
         public IList<BetListModel> CreateBetsModel(IList<BetListElement> bets)
         {

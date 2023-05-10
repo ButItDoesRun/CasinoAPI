@@ -20,6 +20,7 @@ namespace DataLayer
                 .Include(x => x.Game)
                 .Select(x => new BetListElement
                 {
+                    Bid = x.Bid,
                     PlayerName = x.PlayerName,
                     Gid = x.Gid,
                     GameName = x.Game.Name,
@@ -34,6 +35,29 @@ namespace DataLayer
             return bets;
         }
 
+        public IList<BetListElement> GetBetsFromPlayerAndGame(int page, int pageSize, String playername, int gid)
+        {
+            using var db = new CasinoDBContext();
+
+            var bets = db.Bets
+                .Include(x => x.Game)
+                .Where(x => x.PlayerName.Equals(playername) && x.Gid.Equals(gid))
+                .Select(x => new BetListElement
+                {
+                    Bid = x.Bid,
+                    PlayerName = x.PlayerName,
+                    Gid = x.Gid,
+                    GameName = x.Game.Name,
+                    Amount = x.Amount,
+                })
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            if (bets == null) return null;
+
+            return bets;
+        }
 
         //Helper functions
         public int GetNumberOfBets()
