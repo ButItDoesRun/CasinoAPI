@@ -12,15 +12,17 @@ namespace WebServer.Controllers
     public class GameController : BaseController
     {
         private readonly IDataserviceGame _dataserviceGame;
+        private readonly IDataserviceBets _dataserviceBets;
 
-        public GameController(IDataserviceGame dataserviceGame, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public GameController(IDataserviceGame dataserviceGame, IDataserviceBets dataserviceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
             _dataserviceGame = dataserviceGame;
+            _dataserviceBets = dataserviceBets;
         }
 
 
         [HttpGet("get/{gid}", Name = nameof(GetGame))]
-        public IActionResult GetGame(int gid, bool includePot = true, bool includeBet = false, bool includePlayers = false)
+        public IActionResult GetGame(int gid, bool includePot = true, bool includeBets = false, bool includePlayers = false)
         {
             try
             {
@@ -28,20 +30,18 @@ namespace WebServer.Controllers
                 if (game == null) return NotFound();
                 var gameModel = _mapper.Map<GameModel>(game);
 
-                UrlModel updateGame = new()
-                {
-                    Url = "",
-                    JsonBody = new GameDTO()
-                };
-                gameModel.UpdateGameURL = updateGame;
+                gameModel.UpdateGameURL =
+                    GenerateUrlModel(nameof(GameController.GetGame), new { gid = game.Gid }, game);
+
 
                 if (includePot)
                 {
                     Console.WriteLine("Pot will be included");
                 }
-                if (includeBet)
+                if (includeBets)
                 {
-                    Console.WriteLine("Bet will be included");
+                    //_dataserviceBets.GetBets();
+                    Console.WriteLine("Bets will be included");
                 }
                 if (includePlayers)
                 {
