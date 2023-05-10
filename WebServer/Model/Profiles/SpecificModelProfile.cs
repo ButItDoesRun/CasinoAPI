@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataLayer.DataTransferModel;
+using DataLayer.DatabaseModel.CasinoModel;
 
 namespace WebServer.Model.Profiles
 {
@@ -9,6 +10,7 @@ namespace WebServer.Model.Profiles
         {
             CreateMap<SpecificPlayer, SpecificPlayerModel>();
             CreateMap<SpecificSalt, SpecificSaltModel>();
+            CreateMap<Bet, SpecificBetModel>();
         }
     }
 }
