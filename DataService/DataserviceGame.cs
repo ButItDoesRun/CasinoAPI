@@ -90,6 +90,7 @@ namespace DataLayer
             return null;
         }
 
+        //currently not used
         private IList<MoneyPot>? GetGamePots(int gid)
         {
             using var db = new CasinoDBContext();
@@ -154,7 +155,22 @@ namespace DataLayer
 
         public bool DeleteGamePots(int gid)
         {
-            throw new NotImplementedException();
+            using var db = new CasinoDBContext();
+            var game = GetGame(gid);
+            if (game != null)
+            {
+                try
+                {
+                    db.Database?.ExecuteSqlInterpolated($"select delete_gamepots({gid})");
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return false;
+                }
+            }
+            return false;
         }
     }
 }
