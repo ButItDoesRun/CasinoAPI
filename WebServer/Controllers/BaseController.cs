@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WebServer.Model;
 
 namespace WebServer.Controllers
 {
@@ -28,6 +29,20 @@ namespace WebServer.Controllers
             var link = _generator.GetUriByName(HttpContext, endpointName, input);
             return link;
         }
+
+        [NonAction]
+        public UrlModel GenerateUrlModel(string endpointName, object input, object? jsonBody)
+        {
+            var link = _generator.GetUriByName(HttpContext, endpointName, input);
+            UrlModel model = new UrlModel()
+            {
+                Url = link,
+                JsonBody = jsonBody
+            };
+            return model;
+        }
+
+
 
         //MODEL FUNCIONS
         public object DefaultPagingModel<T>(int page, int pageSize, int total, IEnumerable<T> items, string endpointName)
