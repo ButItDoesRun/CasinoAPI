@@ -54,13 +54,13 @@ namespace WebServer.Controllers
         }
 
 
-        public IList<BetListModel> CreateBetsModel(IList<BetListElement> bets)
+        public IList<BetsModel> CreateBetsModel(IList<BetsDTO> bets)
         {
-            var betsModel = new List<BetListModel>();
+            var betsModel = new List<BetsModel>();
 
             foreach (var bet in bets)
             {
-                var betsModelElement = _mapper.Map<BetListModel>(bet);
+                var betsModelElement = _mapper.Map<BetsModel>(bet);
                 betsModelElement.Url = _generator.GetUriByName(HttpContext,
                         nameof(BetsController.GetBets),
                         new { id = bet.PlayerName });

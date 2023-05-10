@@ -9,8 +9,8 @@ namespace DataLayer.DataServiceInterfaces
 {
     public interface IDataserviceBets
     {
-        public IList<BetListElement> GetBets(int page, int pageSize);
-        public IList<BetListElement> GetBetsFromPlayerAndGame(int page, int pageSize, String playername, int gid);
+        public IList<BetsDTO> GetBets(int page, int pageSize);
+        public IList<BetsDTO> GetBetsFromPlayerAndGame(int page, int pageSize, String playername, int gid);
         public int GetNumberOfBets();
     }
 }

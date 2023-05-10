@@ -11,29 +11,29 @@ namespace WebServer.Controllers
     [Route("casino/bet")]
     [ApiController]
 
-    public class SpecificBetController : BaseController
+    public class BetController : BaseController
     {
         private readonly IDataserviceBet _dataServiceBet;
 
-        public SpecificBetController(IDataserviceBet dataServiceBet, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public BetController(IDataserviceBet dataServiceBet, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
             _dataServiceBet = dataServiceBet;
         }
 
-        [HttpGet("{bid}", Name = nameof(GetBetById))]
+        [HttpGet("get/{bid}", Name = nameof(GetBetById))]
         public IActionResult GetBetById(int bid)
         {
-            var Bet = _dataServiceBet.GetBetById(bid);
-            if (Bet == null)
+            var bet = _dataServiceBet.GetBetById(bid);
+            if (bet == null)
             {
                 return NotFound();
             }
-            var specificBetModel = CreateSpecificTitleModel(Bet);
+            var specificBetModel = CreateBetModel(bet);
             return Ok(specificBetModel);
         }
 
-        [HttpPost]
-        public IActionResult CreateBet([FromBody] Bet newBet)
+        [HttpPost("post", Name = nameof(CreateBet))]
+        public IActionResult CreateBet(Bet newBet)
         {
             var bet = _dataServiceBet.CreateBet(newBet.Bid, newBet.PlayerName, newBet.Gid, newBet.Amount, newBet.Date);
             return Ok();
@@ -50,9 +50,9 @@ namespace WebServer.Controllers
             return Ok();
         }
 
-        public SpecificBetModel CreateSpecificTitleModel(Bet bet)
+        public BetModel CreateBetModel(BetDTO bet)
         {
-            var model = _mapper.Map<SpecificBetModel>(bet);
+            var model = _mapper.Map<BetModel>(bet);
 
             model.Url = GenerateLink(nameof(GetBetById), new { Bid = bet.Bid });
 

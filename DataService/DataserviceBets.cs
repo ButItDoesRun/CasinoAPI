@@ -12,13 +12,13 @@ namespace DataLayer
     public class DataserviceBets : IDataserviceBets
     {
 
-        public IList<BetListElement> GetBets(int page, int pageSize)
+        public IList<BetsDTO> GetBets(int page, int pageSize)
         {
             using var db = new CasinoDBContext();
 
             var bets = db.Bets
                 .Include(x => x.Game)
-                .Select(x => new BetListElement
+                .Select(x => new BetsDTO
                 {
                     Bid = x.Bid,
                     PlayerName = x.PlayerName,
@@ -35,14 +35,14 @@ namespace DataLayer
             return bets;
         }
 
-        public IList<BetListElement> GetBetsFromPlayerAndGame(int page, int pageSize, String playername, int gid)
+        public IList<BetsDTO> GetBetsFromPlayerAndGame(int page, int pageSize, String playername, int gid)
         {
             using var db = new CasinoDBContext();
 
             var bets = db.Bets
                 .Include(x => x.Game)
                 .Where(x => x.PlayerName.Equals(playername) && x.Gid.Equals(gid))
-                .Select(x => new BetListElement
+                .Select(x => new BetsDTO
                 {
                     Bid = x.Bid,
                     PlayerName = x.PlayerName,
@@ -65,7 +65,7 @@ namespace DataLayer
             using var db = new CasinoDBContext();
 
             return db.Bets
-                .Select(x => new BetListElement { }).Count();
+                .Select(x => new BetsDTO { }).Count();
         }
     }
 }

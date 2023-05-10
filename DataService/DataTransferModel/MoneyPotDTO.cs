@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataLayer.DataTransferModel
 {
-    public class SpecificSalt
+    public class MoneyPotDTO
     {
-        public string? PlayerName { get; set; }
-        public string? SSalt { get; set; }
+        public int Pid { get; set; }
+        public int Gid { get; set; }
+        public double Amount { get; set; }
     }
 }
