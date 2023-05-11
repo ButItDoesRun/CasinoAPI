@@ -13,7 +13,7 @@ namespace DataLayer
     public class DataservicePlayer : IDataservicePlayer
     {
 
-        public PlayerDTO GetPlayerByName(String name)
+        public PlayerDTO? GetPlayerByName(String name)
         {
             using var db = new CasinoDBContext();
             var player = db.Players?
@@ -66,7 +66,7 @@ namespace DataLayer
 
 
 
-        public IList<PlayersDTO> GetPlayers(int page, int pageSize)
+        public IList<PlayersDTO>? GetPlayers(int page, int pageSize)
         {
             using var db = new CasinoDBContext();
 
@@ -93,9 +93,11 @@ namespace DataLayer
         public int GetNumberOfPlayers()
         {
             using var db = new CasinoDBContext();
-
-            return db.Players
+            var result = db.Players?
                 .Select(x => new PlayersDTO { }).Count();
+            if (result == null) return 0;
+            return (int)result;
+
         }
         
     }
