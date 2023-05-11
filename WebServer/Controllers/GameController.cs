@@ -30,7 +30,7 @@ namespace WebServer.Controllers
                 if (game == null) return NotFound();
                 var gameModel = _mapper.Map<GameModel>(game);
 
-                gameModel.UpdateGameURL =
+                gameModel.UpdateGameUrl =
                     GenerateUrlModel(nameof(GameController.GetGame), new { gid = game.Gid }, game);
 
 

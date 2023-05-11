@@ -1,4 +1,5 @@
-﻿using DataLayer.DataTransferModel;
+﻿using DataLayer.DatabaseModel.CasinoModel;
+using DataLayer.DataTransferModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +18,6 @@ namespace DataLayer.DataServiceInterfaces
         public bool DeleteGame(int gid);
 
         public GameDTO? UpdateGame(int gid, string name, double minbet, double maxbet);
-
-        public MoneyPotDTO? AddGamePot(int gid, double amount);
-
-        public MoneyPotDTO? UpdateGamePot(int gid, double amount);
-
-        public bool DeleteGamePot(int gid);
-
-        public bool DeleteGamePots(int gid);
 
     }
 }

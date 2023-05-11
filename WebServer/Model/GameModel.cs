@@ -6,12 +6,14 @@
         public string? Name { get; set; }
         public double? MinBet { get; set; }
         public double? MaxBet { get; set; }
-        public UrlModel? UpdateGameURL { get; set; }
-        public UrlModel? DeleteGameURL { get; set; }
+        public UrlModel? UpdateGameUrl { get; set; }
+        public UrlModel? DeleteGameUrl { get; set; }
 
         //pot
         public double? PotAmount { get; set; }
-
+        public UrlModel? CreatePotUrl { get; set; }
+        public UrlModel? UpdatePotUrl { get; set; }
+        public UrlModel? DeletePotUrl { get; set; }
     }
 
     public class GameUpdateModel
