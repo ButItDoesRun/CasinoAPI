@@ -16,7 +16,7 @@ namespace DataLayer
         public PlayerDTO GetPlayerByName(String name)
         {
             using var db = new CasinoDBContext();
-            var player = db.Players
+            var player = db.Players?
                 .Select(x => new PlayerDTO
                 {
                     PlayerName = x.PlayerName,
@@ -56,8 +56,8 @@ namespace DataLayer
 
             };
 
-            db.Players.Add(player);
-            db.Salts.Add(salt);
+            db.Players?.Add(player);
+            db.Salts?.Add(salt);
             db.SaveChanges();
 
             if (PlayerExists(playername)) return true;
@@ -70,7 +70,7 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
-            var players = db.Players
+            var players = db.Players?
                 .Select(x => new PlayersDTO
                 {
                     PlayerName = x.PlayerName,

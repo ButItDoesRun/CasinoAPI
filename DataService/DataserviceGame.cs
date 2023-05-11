@@ -30,7 +30,7 @@ namespace DataLayer
         public GameDTO? CreateGame(string name, double minbet, double maxbet, double? potamount)
         {
             using var db = new CasinoDBContext();
-            var createdGame = db.GamesRecords?
+            var createdGame = db.Games?
                 .FromSqlInterpolated($"select * from create_game({name}, {minbet}, {maxbet}, {potamount})")
                 .Select(game => new GameDTO
                 {
@@ -38,8 +38,7 @@ namespace DataLayer
                     Gid = game.Gid,
                     MinBet = game.MinBet,
                     MaxBet = game.MaxBet,
-                    Pid = game.Pid,
-                    PotAmount = game.Amount
+                    Pid = game.Pid
                 })
                 .FirstOrDefault();
             if (createdGame != null) return createdGame;
@@ -74,16 +73,14 @@ namespace DataLayer
         public GameDTO? UpdateGame(int gid, string name, double minbet, double maxbet)
         {
             using var db = new CasinoDBContext();
-            var updatedGame = db.GamesRecords?
+            var updatedGame = db.Games?
                 .FromSqlInterpolated($"select * from update_game({gid}, {name}, {minbet}, {maxbet})")
                 .Select(game => new GameDTO
                 {
                     Name = game.Name,
                     Gid = game.Gid,
                     MinBet = game.MinBet,
-                    MaxBet = game.MaxBet,
-                    Pid = game.Pid,
-                    PotAmount = game.Amount
+                    MaxBet = game.MaxBet
                 })
                 .FirstOrDefault();
             if (updatedGame != null) return updatedGame;
@@ -98,41 +95,35 @@ namespace DataLayer
             return pots;
         }
 
-        public GameDTO? AddGamePot(int gid, double amount)
+        public MoneyPotDTO? AddGamePot(int gid, double amount)
         {
             using var db = new CasinoDBContext();
-            var updatedGame = db.GamesRecords?
+            var updatedGame = db.MoneyPots?
                 .FromSqlInterpolated($"select * from new_gamepot({gid}, {amount})")
-                .Select(game => new GameDTO
+                .Select(pot => new MoneyPotDTO
                 {
-                    Name = game.Name,
-                    Gid = game.Gid,
-                    MinBet = game.MinBet,
-                    MaxBet = game.MaxBet,
-                    Pid = game.Pid,
-                    PotAmount = game.Amount
+                    Pid = pot.Pid,
+                    Gid = pot.Gid,
+                    Amount = pot.Amount
                 })
                 .FirstOrDefault();
             if (updatedGame != null) return updatedGame;
             return null;
         }
 
-        public GameDTO? UpdateGamePot(int gid, double amount)
+        public MoneyPotDTO? UpdateGamePot(int gid, double amount)
         {
             using var db = new CasinoDBContext();
-            var updatedGame = db.GamesRecords?
+            var updatedPot = db.MoneyPots?
                 .FromSqlInterpolated($"select * from update_gamepot({gid}, {amount})")
-                .Select(game => new GameDTO
+                .Select(pot => new MoneyPotDTO
                 {
-                    Name = game.Name,
-                    Gid = game.Gid,
-                    MinBet = game.MinBet,
-                    MaxBet = game.MaxBet,
-                    Pid = game.Pid,
-                    PotAmount = game.Amount
+                   Pid = pot.Pid,
+                   Gid = pot.Gid,
+                   Amount = pot.Amount
                 })
                 .FirstOrDefault();
-            if (updatedGame != null) return updatedGame;
+            if (updatedPot != null) return updatedPot;
             return null;
         }
 
@@ -161,7 +152,7 @@ namespace DataLayer
             {
                 try
                 {
-                    db.Database?.ExecuteSqlInterpolated($"select delete_gamepots({gid})");
+                    db.Database.ExecuteSqlInterpolated($"select delete_gamepots({gid})");
                     return true;
                 }
                 catch (Exception e)

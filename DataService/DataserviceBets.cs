@@ -16,7 +16,7 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
-            var bets = db.Bets
+            var bets = db.Bets?
                 .Include(x => x.Game)
                 .Select(x => new BetsDTO
                 {

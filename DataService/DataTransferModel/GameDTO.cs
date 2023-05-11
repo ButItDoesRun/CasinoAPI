@@ -13,7 +13,6 @@ namespace DataLayer.DataTransferModel
         public double? MinBet { get; set; }
         public double? MaxBet { get; set; }
         public int? Pid { get; set; }
-        public double? PotAmount { get; set; }
 
     }
 }

@@ -18,9 +18,9 @@ namespace DataLayer.DataServiceInterfaces
 
         public GameDTO? UpdateGame(int gid, string name, double minbet, double maxbet);
 
-        public GameDTO? AddGamePot(int gid, double amount);
+        public MoneyPotDTO? AddGamePot(int gid, double amount);
 
-        public GameDTO? UpdateGamePot(int gid, double amount);
+        public MoneyPotDTO? UpdateGamePot(int gid, double amount);
 
         public bool DeleteGamePot(int gid);
 

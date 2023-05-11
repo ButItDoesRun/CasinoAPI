@@ -5,7 +5,7 @@ namespace CasinoAPI.CasinoTest
     public class GameDataserviceTests
     {
         [Fact]
-        public void CreateNewGameWithoutPotReturnsFullRecordWithNullPot()
+        public void CreateNewGameWithoutPotReturnsFullRecord()
         {
             var service = new DataserviceGame();
             var game = service.CreateGame("TestGame", 1, 10);
@@ -13,14 +13,13 @@ namespace CasinoAPI.CasinoTest
             Assert.Equal("TestGame", game?.Name);
             Assert.Equal(1, game?.MinBet);
             Assert.Equal(10, game?.MaxBet);
-            Assert.Null(game?.PotAmount);
 
             //cleaning
             service.DeleteGame(game.Gid);
         }
 
         [Fact]
-        public void CreateNewGameWithPotReturnsFullRecord()
+        public void CreateNewGameWithPotReturnsFullRecords()
         {
             var service = new DataserviceGame();
             var game = service.CreateGame("TestGame", 1, 10, 100);
@@ -28,8 +27,8 @@ namespace CasinoAPI.CasinoTest
             Assert.Contains("TestGame", game.Name);
             Assert.Equal(1, game.MinBet);
             Assert.Equal(10, game.MaxBet);
-            Assert.Equal(100, game.PotAmount);
 
+            //test for getting pot
             //cleaning
             service.DeleteGame(game.Gid);
 
@@ -46,7 +45,6 @@ namespace CasinoAPI.CasinoTest
             Assert.Contains("TheTestGame", updatedgame.Name);
             Assert.Equal(10, updatedgame.MinBet);
             Assert.Equal(100, updatedgame.MaxBet);
-            Assert.Null(updatedgame.PotAmount);
 
             //cleaning
             service.DeleteGame(game.Gid);

@@ -14,7 +14,7 @@ namespace DataLayer
         public BetDTO GetBetById(int bid)
         {
             using var db = new CasinoDBContext();
-            var bet = db.Bets
+            var bet = db.Bets?
                 .Select(x => new BetDTO
                 {
                     Bid = x.Bid,
@@ -41,7 +41,7 @@ namespace DataLayer
                 Date = date
             };
 
-            db.Bets.Add(newBet);
+            db.Bets?.Add(newBet);
             db.SaveChanges();
 
             return GetBetById(bid);
@@ -58,7 +58,7 @@ namespace DataLayer
             {
                 return false;
             }
-            db.Bets.Remove(GetBet(bid));
+            db.Bets?.Remove(GetBet(bid));
             db.SaveChanges();
             return true;
         }
