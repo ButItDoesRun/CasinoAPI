@@ -32,14 +32,14 @@ namespace WebServer.Controllers
             return Ok(specificBetModel);
         }
 
-        [HttpPost("post", Name = nameof(CreateBet))]
+        [HttpGet("create", Name = nameof(CreateBet))]
         public IActionResult CreateBet(Bet newBet)
         {
             var bet = _dataServiceBet.CreateBet(newBet.Bid, newBet.PlayerName, newBet.Gid, newBet.Amount, newBet.Date);
             return Ok();
         }
 
-        [HttpDelete("{bid}")]
+        [HttpGet("delete/{bid}")]
         public IActionResult DeleteBet(int bid)
         {
             var deleted = _dataServiceBet.DeleteBet(bid);
@@ -50,6 +50,7 @@ namespace WebServer.Controllers
             return Ok();
         }
 
+        [NonAction]
         public BetModel CreateBetModel(BetDTO bet)
         {
             var model = _mapper.Map<BetModel>(bet);
