@@ -57,5 +57,40 @@ namespace WebServer.Controllers
             }
         }
 
+        [HttpGet("update/{gid}", Name = nameof(UpdateGame))]
+        public IActionResult UpdateGame(int gid, bool includePot = true, bool includeBets = false, bool includePlayers = false)
+        {
+            try
+            {
+                var game = _dataserviceGame.GetGameById(gid);
+                if (game == null) return NotFound();
+                var gameModel = _mapper.Map<GameModel>(game);
+
+                gameModel.UpdateGameUrl =
+                    GenerateUrlModel(nameof(GameController.GetGame), new { gid = game.Gid }, game);
+
+
+                if (includePot)
+                {
+                    Console.WriteLine("Pot will be included");
+                }
+                if (includeBets)
+                {
+                    Console.WriteLine("Bets will be included");
+                }
+                if (includePlayers)
+                {
+                    Console.WriteLine("Players will be included");
+                }
+
+                return Ok(gameModel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+        }
+
     }
 }
