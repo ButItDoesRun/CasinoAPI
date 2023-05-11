@@ -9,6 +9,8 @@ namespace DataLayer.DataServiceInterfaces
 {
     public interface IDataserviceMoneyPot
     {
+        public MoneyPotDTO? GetGamePot(int gid);
+
         public MoneyPotDTO? AddGamePot(int gid, double amount);
 
         public MoneyPotDTO? UpdateGamePot(int gid, double amount);

@@ -3,6 +3,7 @@ using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebServer.Model;
 
 namespace WebServer.Controllers
@@ -12,12 +13,36 @@ namespace WebServer.Controllers
     public class GameController : BaseController
     {
         private readonly IDataserviceGame _dataserviceGame;
+        private readonly IDataserviceMoneyPot _dataservicePot;
         private readonly IDataserviceBets _dataserviceBets;
 
-        public GameController(IDataserviceGame dataserviceGame, IDataserviceBets dataserviceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public GameController(IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
             _dataserviceGame = dataserviceGame;
             _dataserviceBets = dataserviceBets;
+            _dataservicePot = dataservicePot;
+        }
+
+        [HttpGet("create", Name = nameof(CreateGame))]
+        public IActionResult CreateGame(GameCreateModel createModel, bool includePot = true, bool includeBets = false, bool includePlayers = false)
+        {
+            try
+            {
+                if (createModel.Name == null) return BadRequest();
+                if (createModel.MinBet == null) return BadRequest();
+                if (createModel.MaxBet == null) return BadRequest();
+
+                var game = _dataserviceGame.CreateGame(createModel.Name, (double)createModel.MinBet, (double)createModel.MaxBet);
+                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
+
+                return Ok(gameRecordModel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+
         }
 
 
@@ -26,29 +51,13 @@ namespace WebServer.Controllers
         {
             try
             {
+                
                 var game = _dataserviceGame.GetGameById(gid);
                 if (game == null) return NotFound();
-                var gameModel = _mapper.Map<GameModel>(game);
 
-                gameModel.UpdateGameUrl =
-                    GenerateUrlModel(nameof(GameController.GetGame), new { gid = game.Gid }, game);
+                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
 
-
-                if (includePot)
-                {
-                    Console.WriteLine("Pot will be included");
-                }
-                if (includeBets)
-                {
-                    //_dataserviceBets.GetBets();
-                    Console.WriteLine("Bets will be included");
-                }
-                if (includePlayers)
-                {
-                    Console.WriteLine("Players will be included");
-                }
-
-                return Ok(gameModel);
+                return Ok(gameRecordModel);
             }
             catch (Exception e)
             {
@@ -64,32 +73,60 @@ namespace WebServer.Controllers
             {
                 var game = _dataserviceGame.GetGameById(gid);
                 if (game == null) return NotFound();
-                var gameModel = _mapper.Map<GameModel>(game);
-
-                gameModel.UpdateGameUrl =
-                    GenerateUrlModel(nameof(GameController.GetGame), new { gid = game.Gid }, game);
-
-
-                if (includePot)
-                {
-                    Console.WriteLine("Pot will be included");
-                }
-                if (includeBets)
-                {
-                    Console.WriteLine("Bets will be included");
-                }
-                if (includePlayers)
-                {
-                    Console.WriteLine("Players will be included");
-                }
-
-                return Ok(gameModel);
+                return Ok();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return Unauthorized();
             }
+        }
+
+        [HttpGet("delete/{gid}", Name = nameof(DeleteGame))]
+        public IActionResult DeleteGame(int gid)
+        {
+            return NotFound();
+        }
+
+        [NonAction]
+        private object ConstructGameRecordModel(GameDTO game, bool includePot, bool includeBet, bool includePlayer)
+        {
+            var gameModel = ConstructGameModel(game);
+
+            PotModel? potModel = null;
+            if (includePot)
+            {
+                var pot = _dataservicePot.GetGamePot(game.Gid);
+                potModel = (pot != null) ? ConstructPotModel(pot) : null;
+                Console.WriteLine("Pot will be included");
+            }
+            if (includeBet)
+            {
+                Console.WriteLine("Bets will be included");
+            }
+            if (includePlayer)
+            {
+                Console.WriteLine("Players will be included");
+            }
+
+            var gameRecordModel = ConstructGameRecord(gameModel, potModel, null, null);
+
+            return gameRecordModel;
+        }
+
+        [NonAction]
+        private object ConstructGameRecord(GameModel game, PotModel? pot, BetModel? bet, PlayerModel? player)
+        {
+
+            object gameRecord = new
+            {
+                Game = game,
+                Pot = pot,
+                Bet = bet,
+                Player = player
+            };
+
+            return gameRecord;
         }
 
     }

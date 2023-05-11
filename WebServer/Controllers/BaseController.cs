@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using DataLayer.DatabaseModel.CasinoModel;
+using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -103,6 +106,37 @@ namespace WebServer.Controllers
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
+
+
+        [NonAction]
+        protected GameModel ConstructGameModel(GameDTO game)
+        {
+            var gameModel = _mapper.Map<GameModel>(game);
+            var gameUpdateModel = _mapper.Map<GameUpdateModel>(game);
+            //insert UrlModel for update game
+            gameModel.UpdateGameUrl = GenerateUrlModel(nameof(GameController.UpdateGame), new { gid = game.Gid }, gameUpdateModel);
+            //insert UrlModel for delete game
+            gameModel.DeleteGameUrl = GenerateUrlModel(nameof(GameController.DeleteGame), new { gid = game.Gid }, null);
+
+            return gameModel;
+        }
+
+        [NonAction]
+        protected PotModel ConstructPotModel(MoneyPotDTO pot)
+        {
+            var potModel = _mapper.Map<PotModel>(pot);
+            var potCreateModel = _mapper.Map<PotCreateModel>(pot);
+            var potUpdateModel = _mapper.Map<PotUpdateModel>(pot);
+            //insert UrlModel for create pot
+            potModel.CreatePotUrl = GenerateUrlModel(nameof(PotController.CreatePot), new { gid = pot.Gid }, potCreateModel);
+            //insert UrlModel for update pot
+            potModel.UpdatePotUrl = GenerateUrlModel(nameof(PotController.UpdatePot), new { gid = pot.Gid }, potUpdateModel);
+            //insert UrlModel for delete pot
+            potModel.DeletePotUrl = GenerateUrlModel(nameof(PotController.UpdatePot), new { gid = pot.Gid }, null);
+
+            return potModel;
+        }
+
 
     }
 }

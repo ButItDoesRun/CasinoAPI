@@ -15,10 +15,26 @@ namespace DataLayer
             return pots;
         }
 
+        public MoneyPotDTO? GetGamePot(int gid)
+        {
+            using var db = new CasinoDBContext();
+            var pot = db.MoneyPots?
+                .FromSqlInterpolated($"select * from get_gamepot({gid})")
+                .Select(pot => new MoneyPotDTO
+                {
+                    Pid = pot.Pid,
+                    Gid = pot.Gid,
+                    Amount = pot.Amount
+                })
+                .FirstOrDefault();
+            if (pot != null) return pot;
+            return null;
+        }
+
         public MoneyPotDTO? AddGamePot(int gid, double amount)
         {
             using var db = new CasinoDBContext();
-            var updatedGame = db.MoneyPots?
+            var newPot = db.MoneyPots?
                 .FromSqlInterpolated($"select * from new_gamepot({gid}, {amount})")
                 .Select(pot => new MoneyPotDTO
                 {
@@ -27,7 +43,7 @@ namespace DataLayer
                     Amount = pot.Amount
                 })
                 .FirstOrDefault();
-            if (updatedGame != null) return updatedGame;
+            if (newPot != null) return newPot;
             return null;
         }
 

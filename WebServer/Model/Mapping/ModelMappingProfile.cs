@@ -9,8 +9,13 @@ namespace WebServer.Model.Mapping
         {
             //Game mapping
             CreateMap<GameDTO, GameModel>();
+            CreateMap<GameDTO, GameUpdateModel>();
 
             //MoneyPot mapping
+            CreateMap<MoneyPotDTO, PotModel>()
+                .ForMember(model => model.PotAmount, config => config.MapFrom(dto => dto.Amount));
+            CreateMap<MoneyPotDTO, PotCreateModel>();
+            CreateMap<MoneyPotDTO, PotUpdateModel>();
 
             //Player mapping
             CreateMap<PlayersDTO, PlayersModel>();
