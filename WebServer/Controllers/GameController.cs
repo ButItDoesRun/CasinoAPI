@@ -33,6 +33,7 @@ namespace WebServer.Controllers
                 if (createModel.MaxBet == null) return BadRequest();
 
                 var game = _dataserviceGame.CreateGame(createModel.Name, (double)createModel.MinBet, (double)createModel.MaxBet);
+                if (game == null) return BadRequest();
                 var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
 
                 return Ok(gameRecordModel);
@@ -51,7 +52,7 @@ namespace WebServer.Controllers
         {
             try
             {
-                
+
                 var game = _dataserviceGame.GetGameById(gid);
                 if (game == null) return NotFound();
 
@@ -67,13 +68,20 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("update/{gid}", Name = nameof(UpdateGame))]
-        public IActionResult UpdateGame(int gid, bool includePot = true, bool includeBets = false, bool includePlayers = false)
+        public IActionResult UpdateGame(int gid, GameUpdateModel updateModel, bool includePot = true, bool includeBets = false, bool includePlayers = false)
         {
             try
             {
-                var game = _dataserviceGame.GetGameById(gid);
+                if (updateModel.Name == null) return BadRequest();
+                if (updateModel.MinBet == null) return BadRequest();
+                if (updateModel.MaxBet == null) return BadRequest();
+
+                var game = _dataserviceGame.UpdateGame(gid, updateModel.Name, (double)updateModel.MinBet, (double)updateModel.MaxBet);
                 if (game == null) return NotFound();
-                return Ok();
+
+                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
+
+                return Ok(gameRecordModel);
             }
             catch (Exception e)
             {
@@ -85,7 +93,17 @@ namespace WebServer.Controllers
         [HttpGet("delete/{gid}", Name = nameof(DeleteGame))]
         public IActionResult DeleteGame(int gid)
         {
-            return NotFound();
+            try
+            {
+                var deleted = _dataserviceGame.DeleteGame(gid);
+                if (deleted == false) return NotFound();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
         }
 
         [NonAction]
@@ -109,15 +127,14 @@ namespace WebServer.Controllers
                 Console.WriteLine("Players will be included");
             }
 
-            var gameRecordModel = ConstructGameRecord(gameModel, potModel, null, null);
+            var gameRecordModel = ConstructGameRecordObject(gameModel, potModel, null, null);
 
             return gameRecordModel;
         }
 
         [NonAction]
-        private object ConstructGameRecord(GameModel game, PotModel? pot, BetModel? bet, PlayerModel? player)
+        object ConstructGameRecordObject(GameModel game, PotModel? pot, BetModel? bet, PlayerModel? player)
         {
-
             object gameRecord = new
             {
                 Game = game,
@@ -125,7 +142,6 @@ namespace WebServer.Controllers
                 Bet = bet,
                 Player = player
             };
-
             return gameRecord;
         }
 
