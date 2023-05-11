@@ -2,7 +2,7 @@
 using DataLayer.DataTransferModel;
 using DataLayer.DatabaseModel.CasinoModel;
 
-namespace WebServer.Model.Profiles
+namespace WebServer.Model.MappingProfiles
 {
     public class SpecificModelProfile : Profile
     {

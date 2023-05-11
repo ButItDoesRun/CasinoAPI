@@ -2,7 +2,7 @@
 using DataLayer.DataTransferModel;
 using WebServer.Model;
 
-namespace WebServer.Model.Profiles
+namespace WebServer.Model.MappingProfiles
 {
     public class GameProfile : Profile
     {

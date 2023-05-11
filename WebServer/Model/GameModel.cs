@@ -13,4 +13,11 @@
         public double? PotAmount { get; set; }
 
     }
+
+    public class GameUpdateModel
+    {
+        public string? Name { get; set; }
+        public double? MinBet { get; set; }
+        public double? MaxBet { get; set; }
+    }
 }
