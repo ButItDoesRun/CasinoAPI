@@ -11,11 +11,11 @@ namespace WebServer.Controllers
     [ApiController]
     public class PotController : BaseController
     {
-        private readonly IDataserviceGame _dataserviceGame;
+        private readonly IDataserviceMoneyPot _dataservicePot;
 
-        public PotController(IDataserviceGame dataserviceGame, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public PotController(IDataserviceMoneyPot dataservicePot, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
-            _dataserviceGame = dataserviceGame;
+            _dataservicePot = dataservicePot;
         }
 
         [HttpGet("get/{gid}", Name = nameof(GetPot))]

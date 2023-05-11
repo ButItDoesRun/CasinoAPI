@@ -10,7 +10,7 @@
         public UrlModel? DeleteGameUrl { get; set; }
 
         //pot
-        public double? PotAmount { get; set; }
+        public double? Amount { get; set; }
         public UrlModel? CreatePotUrl { get; set; }
         public UrlModel? UpdatePotUrl { get; set; }
         public UrlModel? DeletePotUrl { get; set; }
