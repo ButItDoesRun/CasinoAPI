@@ -116,6 +116,14 @@ namespace WebServer.Controllers
             {
                 var pot = _dataservicePot.GetGamePot(game.Gid);
                 potModel = (pot != null) ? ConstructPotModel(pot) : null;
+                //if the game doesn't have a pot, we provide an option to create one.
+                if (potModel == null)
+                {
+                    potModel = new PotModel();
+                    var potCreateModel = new PotCreateModel();
+                    potModel.CreatePotUrl = GenerateUrlModel(nameof(PotController.CreatePot), new { gid = game.Gid }, potCreateModel);
+                }
+
                 Console.WriteLine("Pot will be included");
             }
             if (includeBet)

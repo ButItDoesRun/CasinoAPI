@@ -10,13 +10,11 @@
 
     public class PotUpdateModel
     {
-        public int Gid { get; set; }
         public double? Amount { get; set; }
     }
 
     public class PotCreateModel
     {
-        public int Gid { get; set; }
         public double? Amount { get; set; }
     }
 }

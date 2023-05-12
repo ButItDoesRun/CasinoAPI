@@ -132,7 +132,7 @@ namespace WebServer.Controllers
             //insert UrlModel for update pot
             potModel.UpdatePotUrl = GenerateUrlModel(nameof(PotController.UpdatePot), new { gid = pot.Gid }, potUpdateModel);
             //insert UrlModel for delete pot
-            potModel.DeletePotUrl = GenerateUrlModel(nameof(PotController.UpdatePot), new { gid = pot.Gid }, null);
+            potModel.DeletePotUrl = GenerateUrlModel(nameof(PotController.DeletePot), new { gid = pot.Gid }, null);
 
             return potModel;
         }

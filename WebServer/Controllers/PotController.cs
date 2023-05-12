@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataLayer;
+using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Authorization;
@@ -20,20 +21,23 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("create/{gid}", Name = nameof(CreatePot))]
-        public IActionResult CreatePot(int gid)
+        public IActionResult CreatePot(int gid, PotCreateModel createModel)
         {
             try
             {
-                var pot = _dataservicePot.GetGamePot(gid);
-                if (pot == null) return NotFound();
+                if (createModel.Amount == null) return BadRequest();
+
+                var pot = _dataservicePot.AddGamePot(gid, (double)createModel.Amount);
+                if (pot == null) return BadRequest();
+
+                var potModel = ConstructPotModel(pot);
+                return Ok(potModel);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return Unauthorized();
             }
-
-            return NotFound();
         }
 
         [HttpGet("get/{gid}", Name = nameof(GetPot))]
@@ -46,18 +50,41 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("update/{gid}", Name = nameof(UpdatePot))]
-        public IActionResult UpdatePot(int gid)
+        public IActionResult UpdatePot(int gid, PotUpdateModel updateModel)
         {
+            try
+            {
+                if (updateModel.Amount == null) return BadRequest();
 
-            return NotFound();
+                var pot = _dataservicePot.UpdateGamePot(gid, (double)updateModel.Amount);
+                if (pot == null) return NotFound();
+
+                var potModel = ConstructPotModel(pot);
+                return Ok(potModel);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
         }
 
 
         [HttpGet("delete/{gid}", Name = nameof(DeletePot))]
         public IActionResult DeletePot(int gid)
         {
-
-            return NotFound();
+            try
+            {
+                var deleted = _dataservicePot.DeleteGamePot(gid);
+                if (deleted == false) return NotFound();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
         }
 
 
