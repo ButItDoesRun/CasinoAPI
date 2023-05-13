@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataLayer
 {
@@ -131,7 +132,7 @@ namespace DataLayer
             {
                 try
                 {
-                   
+
                     db.Players?.Remove(player);
                     db.SaveChanges();
                     return true;
@@ -144,6 +145,25 @@ namespace DataLayer
             }
 
             return false;
+        }
+
+
+
+        public PlayerDTO UpdatePlayer(string playername, string newHash, string newSalt, DateOnly newBirthdate)
+        {
+            using var db = new CasinoDBContext();
+            var updatedPlayer = db.Players?
+                .FromSqlInterpolated($"select * from update_player({playername}, {newHash}, {newSalt}, {newBirthdate})")
+                .Select(player => new PlayerDTO
+                {
+                    PlayerName = player.PlayerName,
+                    Password = player.Password,
+                    BirthDate = newBirthdate,
+                    Balance = player.Balance
+                })
+                .FirstOrDefault();
+            if (updatedPlayer != null) return updatedPlayer;
+            return null!;
         }
 
 

@@ -19,5 +19,6 @@ namespace DataLayer.DataServiceInterfaces
         public double? GetPlayerBalance(String playername);
         public Player? GetPlayerObject(String name);
         public bool DeletePlayer(string playername);
+        public PlayerDTO UpdatePlayer(string playername, string newHash, string newSalt, DateOnly newBirthdate);
     }
 }

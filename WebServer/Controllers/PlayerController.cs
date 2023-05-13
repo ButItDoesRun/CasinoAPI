@@ -125,6 +125,49 @@ namespace WebServer.Controllers
             }
         }
 
+        [HttpGet("update/test/{playername}", Name = nameof(UpdatePlayer))]
+        public IActionResult UpdatePlayer(string playername, PlayerUpdateModel updateModel)
+        {
+            try
+            {
+                DateOnly birthDate;
+                const int minimumPasswordLength = 8;
+
+                //playername, password and birthdate cannot be null
+                if (playername.IsNullOrEmpty()) return BadRequest();
+                if (updateModel.Password.IsNullOrEmpty()) return BadRequest();
+                if (updateModel.BirthDate.IsNullOrEmpty()) return BadRequest();
+
+                //password must have a minimum length of 8.
+                if (updateModel.Password!.Length < minimumPasswordLength) return BadRequest();
+
+
+                //cheking if the birthdate parameter can be converted to a DateOnly object
+                if (DateOnly.TryParse(updateModel.BirthDate, out DateOnly result))
+                {
+                    birthDate = DateOnly.Parse(updateModel.BirthDate);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+
+                //password is hashed
+                var hashResult = _hashing.Hash(updateModel.Password);
+
+                var updatedPlayer = _dataServicePlayer.UpdatePlayer(playername, hashResult.hash, hashResult.salt, birthDate);
+
+                var playerModel = ConstructPlayerModel(updatedPlayer);
+                return Ok(playerModel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+        }
+
 
 
         //COMMANDS FOR MULTIPLE PLAYERS
