@@ -27,26 +27,54 @@ namespace DataLayer
 
             return bet;
         }
-
-        public BetDTO CreateBet(int bid, string playername, int gid, double amount, DateTime date)
+        public Boolean CreateBet(int bid, string playername, int gid, double amount, DateTime date)
         {
             using var db = new CasinoDBContext();
 
-            Bet newBet = new Bet()
+            DataserviceGame dataServiceGame = new DataserviceGame();
+            Game game = dataServiceGame.GetGame(gid);
+
+            if(game.MaxBet >= amount && game.MinBet <= amount)
             {
-                Bid = bid,
-                PlayerName = playername,
-                Gid = gid,
-                Amount = amount,
-                Date = date
-            };
+                Bet newBet = new Bet()
+                {
+                    Bid = bid,
+                    PlayerName = playername,
+                    Gid = gid,
+                    Amount = amount,
+                    Date = date
+                };
 
-            db.Bets?.Add(newBet);
-            db.SaveChanges();
+                db.Bets?.Add(newBet);
+                db.SaveChanges();
 
-            return GetBetById(bid);
+                return true;
+            }
+            else {
+                return false;
+            }
+
+           
 
         }
+
+        public Boolean UpdateBet(int bid, double amount)
+        {
+            using var db = new CasinoDBContext();
+            var updatedBet = db.Bets?
+                .Select(bet => new BetDTO
+                {
+                    Bid = bid,
+                    PlayerName = bet.PlayerName,
+                    Gid = bet.Gid,
+                    Amount = amount,
+                    Date = bet.Date
+                })
+                .FirstOrDefault();
+            if (updatedBet != null) return true;
+            return false;
+        }
+
 
         public bool DeleteBet(int bid)
         {
@@ -69,5 +97,7 @@ namespace DataLayer
             var bet = db.Bets?.FirstOrDefault(x => x.Bid == bid);
             return bet;
         }
+
+
     }
 }

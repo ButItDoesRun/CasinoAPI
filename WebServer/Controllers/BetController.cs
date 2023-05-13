@@ -28,8 +28,8 @@ namespace WebServer.Controllers
             {
                 return NotFound();
             }
-            var specificBetModel = CreateBetModel(bet);
-            return Ok(specificBetModel);
+            var BetDTOModel = CreateBetModel(bet);
+            return Ok(BetDTOModel);
         }
 
         [HttpGet("create", Name = nameof(CreateBet))]
@@ -37,7 +37,7 @@ namespace WebServer.Controllers
         {
             var bet = _dataServiceBet.CreateBet(newBet.Bid, newBet.PlayerName, newBet.Gid, newBet.Amount, newBet.Date);
             return Ok();
-        }
+        }   
 
         [HttpGet("delete/{bid}")]
         public IActionResult DeleteBet(int bid)
