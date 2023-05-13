@@ -147,9 +147,8 @@ namespace WebServer.Controllers
             var playerBalanceUpdateModel = _mapper.Map<PlayerBalanceUpdateModel>(player);
             //insert UrlModel for update balance
             playerModel.UpdatePlayerBalanceUrl = GenerateUrlModel(nameof(PlayerController.UpdatePlayerBalance), new { playername = player.PlayerName }, playerBalanceUpdateModel);
-            //insert UrlModel for delete game
-            //gameModel.DeleteGameUrl = GenerateUrlModel(nameof(GameController.DeleteGame), new { gid = game.Gid }, null);
-
+            //insert UrlModel for delete player
+            playerModel.DeletePlayerUrl = GenerateUrlModel(nameof(PlayerController.DeletePlayer), new { playername = player.PlayerName }, null);
             return playerModel;
         }
 

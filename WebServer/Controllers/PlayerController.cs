@@ -109,6 +109,23 @@ namespace WebServer.Controllers
         }
 
 
+        [HttpGet("delete/{playername}", Name = nameof(DeletePlayer))]
+        public IActionResult DeletePlayer(string playername)
+        {
+            try
+            {
+                var deleted = _dataServicePlayer.DeletePlayer(playername);
+                if (deleted == false) return NotFound();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+        }
+
+
 
         //COMMANDS FOR MULTIPLE PLAYERS
 

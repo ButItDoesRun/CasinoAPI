@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,12 +68,11 @@ namespace DataLayer
         }
 
 
-
-
         public bool PlayerExists(string playername)
         {
             using var db = new CasinoDBContext();
-            if (GetPlayerByID(playername) == null) return false;
+            var player = db.Players?.FirstOrDefault(x => x.PlayerName == playername);
+            if (player == null) return false;
             return true;
         }
 
@@ -120,6 +120,34 @@ namespace DataLayer
             if (updatedBalance != null) return updatedBalance;
             return null;
         }
+
+
+
+        public bool DeletePlayer(string playername)
+        {
+            using var db = new CasinoDBContext();
+            var player = db.Players?.FirstOrDefault(x => x.PlayerName == playername);
+            if (player != null)
+            {
+                try
+                {
+                   
+                    db.Players?.Remove(player);
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+
+
 
 
 
