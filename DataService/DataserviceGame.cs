@@ -80,7 +80,7 @@ namespace DataLayer
             return null;
         }
 
-        private Game? GetGame(int gid)
+        internal Game? GetGame(int gid)
         {
             using var db = new CasinoDBContext();
             var game = db.Games?.FirstOrDefault(x => x.Gid == gid);

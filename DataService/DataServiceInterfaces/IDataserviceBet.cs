@@ -11,7 +11,8 @@ namespace DataLayer.DataServiceInterfaces
     public interface IDataserviceBet
     {
         public BetDTO GetBetById(int bid);
-        public BetDTO CreateBet(int bid, string playername, int gid, double amount, DateTime date);
+        public Boolean UpdateBet(int bid, double amount);
+        public Boolean CreateBet(int bid, string playername, int gid, double amount, DateTime date);
         public bool DeleteBet(int bid);
 
 
