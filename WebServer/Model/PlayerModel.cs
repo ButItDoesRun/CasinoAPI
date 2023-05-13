@@ -7,8 +7,6 @@
         public double? Balance { get; set; }
         public DateOnly? BirthDate { get; set; }
 
-
-        public UrlModel? CreatePlayerUrl { get; set; }
         public UrlModel? UpdatePlayerBalanceUrl { get; set; }
         public UrlModel? DeletePlayerUrl { get; set; }
     }

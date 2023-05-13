@@ -70,10 +70,10 @@ namespace WebServer.Controllers
 
 
 
-        [HttpGet("get/{name}", Name = nameof(GetPlayerByName))]
-        public IActionResult GetPlayerByName(String name)
+        [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
+        public IActionResult GetPlayerByID(String name)
         {
-            var specificPlayer = _dataServicePlayer.GetPlayerByName(name);
+            var specificPlayer = _dataServicePlayer.GetPlayerByID(name);
             if (specificPlayer == null)
             {
                 return NotFound();

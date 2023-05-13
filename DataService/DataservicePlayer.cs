@@ -16,7 +16,7 @@ namespace DataLayer
 
         //PLAYER METODS
 
-        public PlayerDTO? GetPlayerByName(String name)
+        public PlayerDTO? GetPlayerByID(String name)
         {
             using var db = new CasinoDBContext();
             var player = db.Players?
@@ -32,10 +32,47 @@ namespace DataLayer
             return player;
         }
 
+
+        public Player? GetPlayerObject(String name)
+        {
+            using var db = new CasinoDBContext();
+            var player = db.Players?
+                .Select(x => new Player
+                {
+                    PlayerName = x.PlayerName,
+                    Balance = x.Balance,
+                    BirthDate = x.BirthDate,
+                    Password = x.Password
+                })
+                .FirstOrDefault(x => x.PlayerName == name);
+
+            return player;
+        }
+
+
+        public double? GetPlayerBalance(String playername)
+        {
+            using var db = new CasinoDBContext();
+            var playerBalance = db.Players?
+                .Select(x => new 
+                {
+                    PlayerName = x.PlayerName,
+                    Balance = x.Balance
+                })
+                .FirstOrDefault(x => x.PlayerName == playername);
+
+            var balance = playerBalance!.Balance;
+
+            return balance;
+        }
+
+
+
+
         public bool PlayerExists(string playername)
         {
             using var db = new CasinoDBContext();
-            if (GetPlayerByName(playername) == null) return false;
+            if (GetPlayerByID(playername) == null) return false;
             return true;
         }
 
