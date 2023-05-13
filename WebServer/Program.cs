@@ -48,6 +48,13 @@ builder.Services.AddCors(options =>
 });
 
 
+builder.Services.AddControllers()
+               .AddJsonOptions(options =>
+               {
+                   options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+               });
+
+
 
 var app = builder.Build();
 
