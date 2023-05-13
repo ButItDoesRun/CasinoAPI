@@ -14,5 +14,6 @@ namespace DataLayer.DataServiceInterfaces
         public PlayerDTO? GetPlayerByName(String name);
         public bool CreatePlayer(string playername, string password, DateOnly birthdate, double balance, string ssalt);
         public bool PlayerExists(string playername);
+        public PlayerDTO? UpdatePlayerBalance(string playername, double amount);
     }
 }

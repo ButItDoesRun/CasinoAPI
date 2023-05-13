@@ -1,6 +1,7 @@
 ﻿using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace DataLayer
 
     public class DataservicePlayer : IDataservicePlayer
     {
+
+        //PLAYER METODS
 
         public PlayerDTO? GetPlayerByName(String name)
         {
@@ -65,6 +68,26 @@ namespace DataLayer
         }
 
 
+
+        public PlayerDTO? UpdatePlayerBalance(string playername, double amount)
+        {
+            using var db = new CasinoDBContext();
+            var updatedBalance = db.Players?
+                .FromSqlInterpolated($"select * from update_balance({playername}, {amount})")
+                .Select(player => new PlayerDTO
+                {
+                    PlayerName = player.PlayerName,
+                    Balance = player.Balance
+                })
+                .FirstOrDefault();
+            if (updatedBalance != null) return updatedBalance;
+            return null;
+        }
+
+
+
+
+        //PLAYER LIST METHODS
 
         public IList<PlayersDTO>? GetPlayers(int page, int pageSize)
         {

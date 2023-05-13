@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration.Annotations;
 using DataLayer;
+using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
@@ -77,19 +78,34 @@ namespace WebServer.Controllers
             {
                 return NotFound();
             }
-            var specificPlayerModel = CreatePlayerModel(specificPlayer);
+            //var specificPlayerModel = _mapper.Map<PlayerModel>(specificPlayer);
+
+            var specificPlayerModel = ConstructPlayerModel(specificPlayer);
             return Ok(specificPlayerModel);
         }
 
 
-
-        public PlayerModel CreatePlayerModel(PlayerDTO player)
+        [HttpGet("update/{playername}", Name = nameof(UpdatePlayerBalance))]
+        public IActionResult UpdatePlayerBalance(string playername, PlayerBalanceUpdateModel updateModel)
         {
-            var model = _mapper.Map<PlayerModel>(player);
+            try
+            {
+                if (updateModel.Balance == null) return BadRequest();
 
-            model.Url = GenerateLink(nameof(GetPlayerByName), new { name = player.PlayerName });
+                var balance = _dataServicePlayer.UpdatePlayerBalance(playername, (double)updateModel.Balance);
+                    
+                      
+                if (balance == null) return NotFound();
 
-            return model;
+                var playerModel = ConstructPlayerModel(balance);
+                return Ok(playerModel);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
         }
 
 

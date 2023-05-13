@@ -18,6 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<IDataserviceMoneyPot, DataserviceMoneyPot>();
 builder.Services.AddSingleton<IDataserviceBets, DataserviceBets>();
 builder.Services.AddSingleton<IDataserviceGame, DataserviceGame>();
+builder.Services.AddSingleton<IDataservicePlayer, DataservicePlayer>();
 
 //Other services
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
