@@ -20,7 +20,7 @@ namespace WebServer.Controllers
             _dataServiceBet = dataServiceBet;
         }
 
-        [HttpGet("get/{bid}", Name = nameof(GetBetById))]
+        [HttpGet("{bid}", Name = nameof(GetBetById))]
         public IActionResult GetBetById(int bid)
         {
             var bet = _dataServiceBet.GetBetById(bid);
