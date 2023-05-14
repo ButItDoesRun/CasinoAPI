@@ -33,7 +33,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("create", Name = nameof(CreateBet))]
-        public IActionResult CreateBet(Bet newBet)
+        public IActionResult CreateBet(BetCreateModel newBet)
         {
             var bet = _dataServiceBet.CreateBet(newBet.Bid, newBet.PlayerName, newBet.Gid, newBet.Amount, newBet.Date);
             return Ok();
@@ -48,6 +48,13 @@ namespace WebServer.Controllers
                 return NotFound();
             }
             return Ok();
+        }
+
+        [HttpGet("update", Name = nameof(UpdateBet))]
+        public IActionResult UpdateBet(BetUpdateModel updateBet)
+        {
+            var bet = _dataServiceBet.UpdateBet(updateBet.Bid, updateBet.Amount, updateBet.Date);
+            return Ok(bet);
         }
 
         [NonAction]

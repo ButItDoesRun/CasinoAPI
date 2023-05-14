@@ -22,6 +22,7 @@ namespace WebServer.Model.Mapping
 
             //Bet mapping
             CreateMap<BetsDTO, BetsModel>();
+            CreateMap<BetDTO, BetModel>();
 
         }
 

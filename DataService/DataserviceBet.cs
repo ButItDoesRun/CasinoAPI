@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer
 {
@@ -25,17 +26,19 @@ namespace DataLayer
                 })
                 .FirstOrDefault(x => x.Bid == bid);
 
-            return bet;
+            if(bet != null) return bet; 
+
+            return null; 
         }
-        public Boolean CreateBet(int bid, string playername, int gid, double amount, DateTime date)
+        public Bet CreateBet(int bid, string playername, int gid, double amount, DateTime date)
         {
             using var db = new CasinoDBContext();
 
             DataserviceGame dataServiceGame = new DataserviceGame();
             Game game = dataServiceGame.GetGame(gid);
 
-            if(game.MaxBet >= amount && game.MinBet <= amount)
-            {
+            //if(game.MaxBet >= amount && game.MinBet <= amount)
+            //{
                 Bet newBet = new Bet()
                 {
                     Bid = bid,
@@ -47,32 +50,34 @@ namespace DataLayer
 
                 db.Bets?.Add(newBet);
                 db.SaveChanges();
-
-                return true;
-            }
-            else {
-                return false;
-            }
+                return newBet;
+            //}
+            //else {
+                
+            //    return null;
+            //}
 
            
 
         }
 
-        public Boolean UpdateBet(int bid, double amount)
+        public Bet UpdateBet(int bid, double amount, DateTime date)
         {
             using var db = new CasinoDBContext();
-            var updatedBet = db.Bets?
-                .Select(bet => new BetDTO
-                {
-                    Bid = bid,
-                    PlayerName = bet.PlayerName,
-                    Gid = bet.Gid,
-                    Amount = amount,
-                    Date = bet.Date
-                })
-                .FirstOrDefault();
-            if (updatedBet != null) return true;
-            return false;
+            var oldBet = db.Bets.Where(x => x.Bid == bid).FirstOrDefault();
+
+            if(oldBet != null)
+            {
+                oldBet.Amount = amount;
+                oldBet.Date = date;
+                db.SaveChanges();
+                return oldBet;
+            }
+            else
+            {
+                return null;
+            }
+
         }
 
 
