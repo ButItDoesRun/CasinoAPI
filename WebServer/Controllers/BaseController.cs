@@ -138,5 +138,23 @@ namespace WebServer.Controllers
         }
 
 
+
+
+        [NonAction]
+        protected PlayerModel ConstructPlayerModel(PlayerDTO player)
+        {
+            var playerModel = _mapper.Map<PlayerModel>(player);
+            var playerUpdateModel = _mapper.Map<PlayerUpdateModel>(player);
+            var playerBalanceUpdateModel = _mapper.Map<PlayerBalanceUpdateModel>(player);
+            //insert UrlModel for update balance
+            playerModel.UpdatePlayerUrl = GenerateUrlModel(nameof(PlayerController.UpdatePlayer), new { playername = player.PlayerName }, playerUpdateModel);
+            //insert UrlModel for update balance
+            playerModel.UpdatePlayerBalanceUrl = GenerateUrlModel(nameof(PlayerController.UpdatePlayerBalance), new { playername = player.PlayerName }, playerBalanceUpdateModel);
+            //insert UrlModel for delete player
+            playerModel.DeletePlayerUrl = GenerateUrlModel(nameof(PlayerController.DeletePlayer), new { playername = player.PlayerName }, null);
+            return playerModel;
+        }
+
+
     }
 }

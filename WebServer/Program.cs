@@ -18,6 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<IDataserviceMoneyPot, DataserviceMoneyPot>();
 builder.Services.AddSingleton<IDataserviceBets, DataserviceBets>();
 builder.Services.AddSingleton<IDataserviceGame, DataserviceGame>();
+builder.Services.AddSingleton<IDataservicePlayer, DataservicePlayer>();
 builder.Services.AddSingleton<IDataserviceBet, DataserviceBet>();
 
 //Other services
@@ -46,6 +47,13 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod();
         });
 });
+
+
+builder.Services.AddControllers()
+               .AddJsonOptions(options =>
+               {
+                   options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+               });
 
 
 

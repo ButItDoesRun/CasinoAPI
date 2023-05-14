@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.Configuration.Annotations;
 using DataLayer;
+using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
@@ -69,27 +70,102 @@ namespace WebServer.Controllers
 
 
 
-        [HttpGet("get/{name}", Name = nameof(GetPlayerByName))]
-        public IActionResult GetPlayerByName(String name)
+        [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
+        public IActionResult GetPlayerByID(String name)
         {
-            var specificPlayer = _dataServicePlayer.GetPlayerByName(name);
+            var specificPlayer = _dataServicePlayer.GetPlayerByID(name);
             if (specificPlayer == null)
             {
                 return NotFound();
             }
-            var specificPlayerModel = CreatePlayerModel(specificPlayer);
+            //var specificPlayerModel = _mapper.Map<PlayerModel>(specificPlayer);
+
+            var specificPlayerModel = ConstructPlayerModel(specificPlayer);
             return Ok(specificPlayerModel);
         }
 
 
-
-        public PlayerModel CreatePlayerModel(PlayerDTO player)
+        [HttpGet("update/{playername}", Name = nameof(UpdatePlayerBalance))]
+        public IActionResult UpdatePlayerBalance(string playername, PlayerBalanceUpdateModel updateModel)
         {
-            var model = _mapper.Map<PlayerModel>(player);
+            try
+            {
+                if (updateModel.Balance == null) return BadRequest();
 
-            model.Url = GenerateLink(nameof(GetPlayerByName), new { name = player.PlayerName });
+                var balance = _dataServicePlayer.UpdatePlayerBalance(playername, (double)updateModel.Balance);
+                    
+                      
+                if (balance == null) return NotFound();
 
-            return model;
+                var playerModel = ConstructPlayerModel(balance);
+                return Ok(playerModel);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+        }
+
+
+        [HttpGet("delete/{playername}", Name = nameof(DeletePlayer))]
+        public IActionResult DeletePlayer(string playername)
+        {
+            try
+            {
+                var deleted = _dataServicePlayer.DeletePlayer(playername);
+                if (deleted == false) return NotFound();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+        }
+
+        [HttpGet("update/test/{playername}", Name = nameof(UpdatePlayer))]
+        public IActionResult UpdatePlayer(string playername, PlayerUpdateModel updateModel)
+        {
+            try
+            {
+                DateOnly birthDate;
+                const int minimumPasswordLength = 8;
+
+                //playername, password and birthdate cannot be null
+                if (playername.IsNullOrEmpty()) return BadRequest();
+                if (updateModel.Password.IsNullOrEmpty()) return BadRequest();
+                if (updateModel.BirthDate.IsNullOrEmpty()) return BadRequest();
+
+                //password must have a minimum length of 8.
+                if (updateModel.Password!.Length < minimumPasswordLength) return BadRequest();
+
+
+                //cheking if the birthdate parameter can be converted to a DateOnly object
+                if (DateOnly.TryParse(updateModel.BirthDate, out DateOnly result))
+                {
+                    birthDate = DateOnly.Parse(updateModel.BirthDate);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+
+                //password is hashed
+                var hashResult = _hashing.Hash(updateModel.Password);
+
+                var updatedPlayer = _dataServicePlayer.UpdatePlayer(playername, hashResult.hash, hashResult.salt, birthDate);
+
+                var playerModel = ConstructPlayerModel(updatedPlayer);
+                return Ok(playerModel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
         }
 
 

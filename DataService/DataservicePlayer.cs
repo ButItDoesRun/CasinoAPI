@@ -1,11 +1,14 @@
 ﻿using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DataLayer
 {
@@ -13,7 +16,9 @@ namespace DataLayer
     public class DataservicePlayer : IDataservicePlayer
     {
 
-        public PlayerDTO? GetPlayerByName(String name)
+        //PLAYER METODS
+
+        public PlayerDTO? GetPlayerByID(String name)
         {
             using var db = new CasinoDBContext();
             var player = db.Players?
@@ -29,10 +34,46 @@ namespace DataLayer
             return player;
         }
 
+
+        public Player? GetPlayerObject(String name)
+        {
+            using var db = new CasinoDBContext();
+            var player = db.Players?
+                .Select(x => new Player
+                {
+                    PlayerName = x.PlayerName,
+                    Balance = x.Balance,
+                    BirthDate = x.BirthDate,
+                    Password = x.Password
+                })
+                .FirstOrDefault(x => x.PlayerName == name);
+
+            return player;
+        }
+
+
+        public double? GetPlayerBalance(String playername)
+        {
+            using var db = new CasinoDBContext();
+            var playerBalance = db.Players?
+                .Select(x => new 
+                {
+                    PlayerName = x.PlayerName,
+                    Balance = x.Balance
+                })
+                .FirstOrDefault(x => x.PlayerName == playername);
+
+            var balance = playerBalance!.Balance;
+
+            return balance;
+        }
+
+
         public bool PlayerExists(string playername)
         {
             using var db = new CasinoDBContext();
-            if (GetPlayerByName(playername) == null) return false;
+            var player = db.Players?.FirstOrDefault(x => x.PlayerName == playername);
+            if (player == null) return false;
             return true;
         }
 
@@ -65,6 +106,73 @@ namespace DataLayer
         }
 
 
+
+        public PlayerDTO? UpdatePlayerBalance(string playername, double amount)
+        {
+            using var db = new CasinoDBContext();
+            var updatedBalance = db.Players?
+                .FromSqlInterpolated($"select * from update_balance({playername}, {amount})")
+                .Select(player => new PlayerDTO
+                {
+                    PlayerName = player.PlayerName,
+                    Balance = player.Balance
+                })
+                .FirstOrDefault();
+            if (updatedBalance != null) return updatedBalance;
+            return null;
+        }
+
+
+
+        public bool DeletePlayer(string playername)
+        {
+            using var db = new CasinoDBContext();
+            var player = db.Players?.FirstOrDefault(x => x.PlayerName == playername);
+            if (player != null)
+            {
+                try
+                {
+
+                    db.Players?.Remove(player);
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+
+
+        public PlayerDTO UpdatePlayer(string playername, string newHash, string newSalt, DateOnly newBirthdate)
+        {
+            using var db = new CasinoDBContext();
+            var updatedPlayer = db.Players?
+                .FromSqlInterpolated($"select * from update_player({playername}, {newHash}, {newSalt}, {newBirthdate})")
+                .Select(player => new PlayerDTO
+                {
+                    PlayerName = player.PlayerName,
+                    Password = player.Password,
+                    BirthDate = newBirthdate,
+                    Balance = player.Balance
+                })
+                .FirstOrDefault();
+            if (updatedPlayer != null) return updatedPlayer;
+            return null!;
+        }
+
+
+
+
+
+
+
+        //PLAYER LIST METHODS
 
         public IList<PlayersDTO>? GetPlayers(int page, int pageSize)
         {

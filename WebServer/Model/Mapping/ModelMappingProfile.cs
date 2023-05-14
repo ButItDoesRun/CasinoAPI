@@ -18,6 +18,11 @@ namespace WebServer.Model.Mapping
             CreateMap<MoneyPotDTO, PotUpdateModel>();
 
             //Player mapping
+            CreateMap<PlayerDTO, PlayerModel>();
+            CreateMap<PlayerDTO, PlayerModel>()
+               .ForMember(model => model.Balance, config => config.MapFrom(dto => dto.Balance));
+            CreateMap<PlayerDTO, PlayerBalanceUpdateModel>();
+            CreateMap<PlayerDTO, PlayerUpdateModel>();
             CreateMap<PlayersDTO, PlayersModel>();
 
             //Bet mapping
