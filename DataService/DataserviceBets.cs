@@ -102,6 +102,25 @@ namespace DataLayer
             return bets;
         }
 
+        public IList<BetDTO>? GetGameBets(int gid)
+        {
+            using var db = new CasinoDBContext();
+
+            var bets = db.Bets?
+                .Where(x => x.Gid.Equals(gid))
+                .Select(x => new BetDTO
+                {
+                    Bid = x.Bid,
+                    PlayerName = x.PlayerName,
+                    Gid = x.Gid,
+                    Amount = x.Amount,
+                })
+                .ToList();
+
+            return bets;
+        }
+
+
         //Helper functions
         public int GetNumberOfBets()
         {

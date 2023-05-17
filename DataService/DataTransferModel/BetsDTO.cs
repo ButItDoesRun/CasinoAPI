@@ -11,7 +11,6 @@ namespace DataLayer.DataTransferModel
         public int? Bid { get; set; }
         public string? PlayerName { get; set; }
         public int? Gid { get; set; }
-        public string? GameName { get; set; }
         public double? Amount { get; set; }
     }
 }
