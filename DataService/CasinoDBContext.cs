@@ -23,6 +23,7 @@ namespace DataLayer
         //atru - localhost database
         const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=Bqm33etj";
 
+        //raroni - localhost database
         //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=password";
 
         /* CASINO MODEL */
