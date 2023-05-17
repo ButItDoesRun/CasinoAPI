@@ -12,6 +12,8 @@ namespace DataLayer
 {
     public class DataserviceBet : IDataserviceBet
     {
+        public static DateTime Now { get; }
+        DateTime utcDate = DateTime.UtcNow;
         public BetDTO GetBetById(int bid)
         {
             using var db = new CasinoDBContext();
@@ -30,38 +32,37 @@ namespace DataLayer
 
             return null; 
         }
-        public Bet CreateBet(int bid, string playername, int gid, double amount, DateTime date)
+        public BetDTO CreateBet(string playername, int gid, double? amount)
         {
             using var db = new CasinoDBContext();
 
             DataserviceGame dataServiceGame = new DataserviceGame();
             Game game = dataServiceGame.GetGame(gid);
 
-            //if(game.MaxBet >= amount && game.MinBet <= amount)
-            //{
+            if(game.MaxBet >= amount && game.MinBet <= amount)
+            {
                 Bet newBet = new Bet()
                 {
-                    Bid = bid,
                     PlayerName = playername,
                     Gid = gid,
                     Amount = amount,
-                    Date = date
+                    Date = utcDate
                 };
 
                 db.Bets?.Add(newBet);
                 db.SaveChanges();
-                return newBet;
-            //}
-            //else {
+                return GetBetById(newBet.Bid);
+            }
+            else {
                 
-            //    return null;
-            //}
+                return null;
+            }
 
            
 
         }
 
-        public Bet UpdateBet(int bid, double amount, DateTime date)
+        public BetDTO UpdateBet(int bid, double amount)
         {
             using var db = new CasinoDBContext();
             var oldBet = db.Bets.Where(x => x.Bid == bid).FirstOrDefault();
@@ -69,9 +70,9 @@ namespace DataLayer
             if(oldBet != null)
             {
                 oldBet.Amount = amount;
-                oldBet.Date = date;
+                oldBet.Date = utcDate;
                 db.SaveChanges();
-                return oldBet;
+                return GetBetById(oldBet.Bid); ;
             }
             else
             {

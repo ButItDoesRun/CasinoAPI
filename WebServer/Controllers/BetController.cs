@@ -28,15 +28,16 @@ namespace WebServer.Controllers
             {
                 return NotFound();
             }
-            var BetDTOModel = CreateBetModel(bet);
-            return Ok(BetDTOModel);
+            var getBetModel = ConstructBetModel(bet);
+            return Ok(getBetModel);
         }
 
         [HttpGet("create", Name = nameof(CreateBet))]
-        public IActionResult CreateBet(BetCreateModel newBet)
+        public IActionResult CreateBet(BetCreateModel createModel)
         {
-            var bet = _dataServiceBet.CreateBet(newBet.Bid, newBet.PlayerName, newBet.Gid, newBet.Amount, newBet.Date);
-            return Ok();
+            var bet = _dataServiceBet.CreateBet(createModel.PlayerName, createModel.Gid, createModel.Amount);
+            var createBetModel = ConstructBetModel(bet);
+            return Ok(createBetModel);
         }   
 
         [HttpGet("delete/{bid}")]
@@ -47,14 +48,15 @@ namespace WebServer.Controllers
             {
                 return NotFound();
             }
-            return Ok();
+            return Ok(deleted);
         }
 
         [HttpGet("update", Name = nameof(UpdateBet))]
         public IActionResult UpdateBet(BetUpdateModel updateBet)
         {
-            var bet = _dataServiceBet.UpdateBet(updateBet.Bid, updateBet.Amount, updateBet.Date);
-            return Ok(bet);
+            var bet = _dataServiceBet.UpdateBet(updateBet.Bid, updateBet.Amount);
+            var updateBetModel = ConstructBetModel(bet);
+            return Ok(updateBetModel);
         }
 
         [NonAction]
@@ -62,7 +64,7 @@ namespace WebServer.Controllers
         {
             var model = _mapper.Map<BetModel>(bet);
 
-            model.Url = GenerateLink(nameof(GetBetById), new { Bid = bet.Bid });
+            //model.Url = GenerateLink(nameof(GetBetById), new { Bid = bet.Bid });
 
             return model;
         }

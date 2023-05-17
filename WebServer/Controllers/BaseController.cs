@@ -137,6 +137,23 @@ namespace WebServer.Controllers
             return potModel;
         }
 
+        [NonAction]
+        protected BetModel ConstructBetModel(BetDTO bet)
+        {
+            var betModel = _mapper.Map<BetModel>(bet);
+            var betCreateModel = _mapper.Map<BetCreateModel>(bet);
+            var betUpdateModel = _mapper.Map<BetUpdateModel>(bet);
+            var betDeleteModel = _mapper.Map<BetDeleteModel>(bet);
+
+            betModel.CreateBetUrl = GenerateUrlModel(nameof(BetController.CreateBet), new { bid = bet.Bid }, betCreateModel);
+
+            betModel.UpdateBetUrl = GenerateUrlModel(nameof(BetController.UpdateBet), new { bid = bet.Bid }, betUpdateModel);
+
+            betModel.DeleteBetUrl = GenerateUrlModel(nameof(BetController.DeleteBet), new { bid = bet.Bid }, betDeleteModel);
+
+            return betModel;
+        }
+
 
 
 

@@ -28,7 +28,9 @@ namespace WebServer.Model.Mapping
             //Bet mapping
             CreateMap<BetsDTO, BetsModel>();
             CreateMap<BetDTO, BetModel>();
-
+            CreateMap<BetDTO, BetCreateModel>();
+            CreateMap<BetDTO, BetUpdateModel>();
+            CreateMap<BetDTO, BetDeleteModel>();
         }
 
     }
