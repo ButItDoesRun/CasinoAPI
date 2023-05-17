@@ -24,7 +24,6 @@ namespace DataLayer
                     Bid = x.Bid,
                     PlayerName = x.PlayerName,
                     Gid = x.Gid,
-                    GameName = x.Game.Name,
                     Amount = x.Amount,
                 })
                 .Skip(page * pageSize)
@@ -48,7 +47,6 @@ namespace DataLayer
                     Bid = x.Bid,
                     PlayerName = x.PlayerName,
                     Gid = x.Gid,
-                    GameName = x.Game.Name,
                     Amount = x.Amount,
                 })
                 .Skip(page * pageSize)
@@ -71,7 +69,6 @@ namespace DataLayer
                     Bid = x.Bid,
                     PlayerName = x.PlayerName,
                     Gid = x.Gid,
-                    GameName = x.Game.Name,
                     Amount = x.Amount,
                 })
                 .Skip(page * pageSize)
@@ -94,7 +91,6 @@ namespace DataLayer
                 Bid = x.Bid,
                 PlayerName = x.PlayerName,
                 Gid = x.Gid,
-                GameName = x.Game.Name,
                 Amount = x.Amount,
             })
                 .Skip(page * pageSize)
