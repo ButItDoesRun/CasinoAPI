@@ -228,6 +228,7 @@ namespace DataLayer
                     Pid = x.Game.Pid,
                     PotAmount = x.Game!.MoneyPot!.Amount,
                 })
+                .GroupBy(x => x.Gid).Select(y => y.First()).Distinct()
                 .ToList();
 
             if (playerGames == null) return null;

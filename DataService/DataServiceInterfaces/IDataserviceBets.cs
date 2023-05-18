@@ -14,6 +14,7 @@ namespace DataLayer.DataServiceInterfaces
         public IList<BetsDTO> GetBetsFromPlayer(int page, int pageSize, string playername);
         public IList<BetsDTO> GetBetsFromGame(int page, int pageSize, int gid);
         public IList<BetDTO>? GetGameBets(int gid);
+        public IList<BetDTO> GetPlayerBets(String playername, int gid);
         public int GetNumberOfBets();
     }
 }

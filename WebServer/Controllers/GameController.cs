@@ -109,7 +109,8 @@ namespace WebServer.Controllers
 
         [NonAction]
         private object ConstructGameRecordModel(GameDTO game, bool includePot, bool includeBet)
-        {
+        {            
+
             var gameModel = ConstructGameModel(game);
             if (includePot || includeBet)
             {

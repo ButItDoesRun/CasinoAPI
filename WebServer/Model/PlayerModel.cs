@@ -31,8 +31,7 @@
         public double? MinBet { get; set; }
         public double? MaxBet { get; set; }
         public double? PotAmount { get; set; }
-
-        IList<BetModel>? Bets { get; set; }
+        public IList<BetModel>? Bets { get; set; }
 
     }
 
