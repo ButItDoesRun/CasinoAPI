@@ -4,6 +4,7 @@ using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
+using NpgsqlTypes;
 using WebServer.Model;
 
 namespace WebServer.Controllers 
@@ -35,14 +36,14 @@ namespace WebServer.Controllers
         [HttpGet("create/{gid}", Name = nameof(CreateBet))]
         public IActionResult CreateBet(BetCreateModel createModel, int gid)
         {
-            var bet = _dataServiceBet.CreateBet(createModel.PlayerName!, createModel.Gid, createModel.Amount);
+            var bet = _dataServiceBet.CreateBet(createModel.PlayerName!, gid, createModel.Amount);
 
             if (bet == null) return BadRequest();
             var createBetModel = ConstructBetModel(bet);
             return Ok(createBetModel);
         }   
 
-        [HttpGet("delete/{bid}")]
+        [HttpGet("delete/{bid}", Name = nameof(DeleteBet))]
         public IActionResult DeleteBet(int bid)
         {
             var deleted = _dataServiceBet.DeleteBet(bid);
@@ -57,6 +58,7 @@ namespace WebServer.Controllers
         public IActionResult UpdateBet(BetUpdateModel updateBet, int bid)
         {
             var bet = _dataServiceBet.UpdateBet(bid, updateBet.Amount);
+            if (bet == null) return BadRequest();
             var updateBetModel = ConstructBetModel(bet);
             return Ok(updateBetModel);
         }

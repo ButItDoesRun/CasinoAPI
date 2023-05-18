@@ -145,7 +145,7 @@ namespace WebServer.Controllers
             var betUpdateModel = _mapper.Map<BetUpdateModel>(bet);
             var betDeleteModel = _mapper.Map<BetDeleteModel>(bet);
 
-            betModel.CreateBetUrl = GenerateUrlModel(nameof(BetController.CreateBet), new { bid = bet.Bid }, betCreateModel);
+            betModel.CreateBetUrl = GenerateUrlModel(nameof(BetController.CreateBet), new { gid = bet.Gid }, betCreateModel);
 
             betModel.UpdateBetUrl = GenerateUrlModel(nameof(BetController.UpdateBet), new { bid = bet.Bid }, betUpdateModel);
 
