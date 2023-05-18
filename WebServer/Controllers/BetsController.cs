@@ -37,7 +37,7 @@ namespace WebServer.Controllers
 
         }
 
-        [HttpGet("player/game", Name = nameof(GetBetsFromPlayerAndGame))]
+        [HttpGet("Both", Name = nameof(GetBetsFromPlayerAndGame))]
         public IActionResult GetBetsFromPlayerAndGame(String playername, int gid, int page = 0, int pageSize = 20)
         {
             var bets = _dataServiceBets.GetBetsFromPlayerAndGame(page, pageSize, playername, gid);
