@@ -32,10 +32,10 @@ namespace WebServer.Controllers
             return Ok(getBetModel);
         }
 
-        [HttpGet("create", Name = nameof(CreateBet))]
-        public IActionResult CreateBet(BetCreateModel createModel)
+        [HttpGet("create/{gid}", Name = nameof(CreateBet))]
+        public IActionResult CreateBet(BetCreateModel createModel, int gid)
         {
-            var bet = _dataServiceBet.CreateBet(createModel.PlayerName, createModel.Gid, createModel.Amount);
+            var bet = _dataServiceBet.CreateBet(createModel.PlayerName, gid, createModel.Amount);
             
             if(bet == null)
             {
@@ -57,10 +57,10 @@ namespace WebServer.Controllers
             return Ok(deleted);
         }
 
-        [HttpGet("update", Name = nameof(UpdateBet))]
-        public IActionResult UpdateBet(BetUpdateModel updateBet)
+        [HttpGet("update/{bid}", Name = nameof(UpdateBet))]
+        public IActionResult UpdateBet(BetUpdateModel updateBet, int bid)
         {
-            var bet = _dataServiceBet.UpdateBet(updateBet.Bid, updateBet.Amount);
+            var bet = _dataServiceBet.UpdateBet(bid, updateBet.Amount);
             var updateBetModel = ConstructBetModel(bet);
             return Ok(updateBetModel);
         }
