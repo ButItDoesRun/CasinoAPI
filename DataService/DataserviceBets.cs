@@ -30,7 +30,7 @@ namespace DataLayer
                 .Take(pageSize)
                 .ToList();
 
-            if (bets == null) return null;
+            if (bets == null) return null!;
 
             return bets;
         }
@@ -39,9 +39,9 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
-            var bets = db.Bets
+            var bets = db.Bets!
                 .Include(x => x.Game)
-                .Where(x => x.PlayerName.Equals(playername) && x.Gid.Equals(gid))
+                .Where(x => x.PlayerName!.Equals(playername) && x.Gid.Equals(gid))
                 .Select(x => new BetsDTO
                 {
                     Bid = x.Bid,
@@ -53,7 +53,7 @@ namespace DataLayer
                 .Take(pageSize)
                 .ToList();
 
-            if (bets == null) return null;
+            if (bets == null) return null!;
 
             return bets;
         }
@@ -62,8 +62,8 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
-            var bets = db.Bets
-            .Where(x => x.PlayerName.Equals(playername))
+            var bets = db.Bets!
+            .Where(x => x.PlayerName!.Equals(playername))
             .Select(x => new BetsDTO
                 {
                     Bid = x.Bid,
@@ -75,7 +75,7 @@ namespace DataLayer
                 .Take(pageSize)
                 .ToList();
 
-            if (bets == null) return null;
+            if (bets == null) return null!;
 
             return bets;
         }
@@ -84,7 +84,7 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
-            var bets = db.Bets
+            var bets = db.Bets!
             .Where(x => x.Gid.Equals(gid))
             .Select(x => new BetsDTO
             {
@@ -97,7 +97,7 @@ namespace DataLayer
                 .Take(pageSize)
                 .ToList();
 
-            if (bets == null) return null;
+            if (bets == null) return null!;
 
             return bets;
         }
@@ -126,7 +126,7 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
-            return db.Bets
+            return db.Bets!
                 .Select(x => new BetsDTO { }).Count();
         }
     }

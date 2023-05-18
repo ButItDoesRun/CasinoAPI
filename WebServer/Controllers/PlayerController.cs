@@ -5,6 +5,7 @@ using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO;
 using WebServer.Model;
 using WebServer.Services;
@@ -230,22 +231,22 @@ namespace WebServer.Controllers
 
 
         //PLAYER RECORD MODEL
-
-        /*
+                
         [NonAction]
-        private object ConstructGameRecordModel(PlayerDTO player, bool includeGame, GameDTO game, bool includePot, bool includeBet)
+        private object ConstructGameRecordModel(PlayerDTO player, bool includeGame, bool includePot, bool includeBet)
         {
             var playerModel = ConstructPlayerModel(player);
 
             if (includeGame)
             {
+                var playergames = _dataServicePlayer.Get
 
 
             }
 
 
 
-                var gameModel = ConstructGameModel(game);
+                //var gameModel = ConstructGameModel(game);
             if (includePot || includeBet)
             {
                 PotModel? potModel = null;
@@ -281,18 +282,22 @@ namespace WebServer.Controllers
                     }
                 }
 
-                var gameRecordModel = ConstructPlayerRecordObject(playerModel, gameModel, potModel, betsModel);
+                //var gameRecordModel = ConstructPlayerRecordObject(playerModel, gameModel, potModel, betsModel);
 
-                return gameRecordModel;
+                var playerRecordModel = ConstructPlayerRecordObject(playerModel, playerGamesModel);
+
+                return playerRecordModel;
             }
 
-            return gameModel;
+            return playerModel;
         }
 
-        */
+        
+
+       
 
         [NonAction]
-        object ConstructPlayerRecordObject(PlayerModel player, IList<GamesModel> games)
+        object ConstructPlayerRecordObject(PlayerModel player, IList<PlayerGamesModel> games)
         {
             object playerRecord = new
             {
