@@ -17,10 +17,16 @@ namespace WebServer.Controllers
     {
         private readonly IDataservicePlayer _dataServicePlayer;
         private readonly Hashing _hashing;
+        private readonly IDataserviceGame _dataserviceGame;
+        private readonly IDataserviceMoneyPot _dataservicePot;
+        private readonly IDataserviceBets _dataserviceBets;
 
-        public PlayerController(IDataservicePlayer dataServicePlayer, LinkGenerator generator, Hashing hashing, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public PlayerController(IDataservicePlayer dataServicePlayer, IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, Hashing hashing, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
             _dataServicePlayer = dataServicePlayer;
+            _dataserviceGame = dataserviceGame;
+            _dataserviceBets = dataserviceBets;
+            _dataservicePot = dataservicePot;
             _hashing = hashing;
         }
 
@@ -219,6 +225,81 @@ namespace WebServer.Controllers
             }
 
             return playersModel;
+        }
+
+
+
+        //PLAYER RECORD MODEL
+
+        /*
+        [NonAction]
+        private object ConstructGameRecordModel(PlayerDTO player, bool includeGame, GameDTO game, bool includePot, bool includeBet)
+        {
+            var playerModel = ConstructPlayerModel(player);
+
+            if (includeGame)
+            {
+
+
+            }
+
+
+
+                var gameModel = ConstructGameModel(game);
+            if (includePot || includeBet)
+            {
+                PotModel? potModel = null;
+                if (includePot)
+                {
+                    var pot = _dataservicePot.GetGamePot(game.Gid);
+                    potModel = (pot != null) ? ConstructPotModel(pot) : null;
+                    //if the game doesn't have a pot, we provide an option to create one.
+                    if (potModel == null)
+                    {
+                        potModel = new PotModel();
+                        var potCreateModel = new PotCreateModel();
+                        potModel.CreatePotUrl = GenerateUrlModel(nameof(PotController.CreatePot), new { gid = game.Gid }, potCreateModel);
+                    }
+
+                }
+
+                IList<BetModel>? betsModel = null;
+                if (includeBet)
+                {
+                    var bets = _dataserviceBets.GetGameBets(game.Gid);
+                    betsModel = (bets != null) ? bets.Select(bet => ConstructBetModel(bet)).ToList() : null;
+                    //if the game doesn't have a bet, we provide an option to create one.
+                    if (betsModel == null || !betsModel.Any())
+                    {
+                        BetModel betModel = new BetModel();
+                        var betCreateModel = new BetCreateModel();
+                        betModel.CreateBetUrl = GenerateUrlModel(nameof(BetController.CreateBet), new { }, betCreateModel);
+
+                        var betModelList = new List<BetModel>();
+                        betModelList.Add(betModel);
+                        betsModel = betModelList;
+                    }
+                }
+
+                var gameRecordModel = ConstructPlayerRecordObject(playerModel, gameModel, potModel, betsModel);
+
+                return gameRecordModel;
+            }
+
+            return gameModel;
+        }
+
+        */
+
+        [NonAction]
+        object ConstructPlayerRecordObject(PlayerModel player, IList<GamesModel> games)
+        {
+            object playerRecord = new
+            {
+                Player = player,
+                Games = games,
+            };
+            return playerRecord;
         }
 
 
