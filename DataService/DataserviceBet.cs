@@ -41,7 +41,12 @@ namespace DataLayer
             Game game = dataServiceGame.GetGame(gid)!;
 
             DataservicePlayer dataservicePlayer = new DataservicePlayer();
-            PlayerDTO? player = dataservicePlayer.GetPlayerByID(playername)!;
+            Player player = dataservicePlayer.GetPlayerObject(playername)!;
+
+            if(player == null)
+            {
+                return null!;
+            }
 
             if((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
             {
