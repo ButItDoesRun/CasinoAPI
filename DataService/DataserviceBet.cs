@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace DataLayer
 {
@@ -39,7 +40,10 @@ namespace DataLayer
             DataserviceGame dataServiceGame = new DataserviceGame();
             Game game = dataServiceGame.GetGame(gid)!;
 
-            if(game.MaxBet >= amount && game.MinBet <= amount)
+            DataservicePlayer dataservicePlayer = new DataservicePlayer();
+            PlayerDTO? player = dataservicePlayer.GetPlayerByID(playername)!;
+
+            if((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
             {
                 Bet newBet = new Bet()
                 {
@@ -67,12 +71,26 @@ namespace DataLayer
             using var db = new CasinoDBContext();
             var oldBet = db.Bets!.Where(x => x.Bid == bid).FirstOrDefault();
 
-            if(oldBet != null)
+            if(oldBet == null) return null!;
+
+            DataserviceGame dataServiceGame = new DataserviceGame();
+            Game game = dataServiceGame.GetGame(oldBet.Gid)!;
+
+            if (oldBet.PlayerName == null) return null!;
+
+            DataservicePlayer dataservicePlayer = new DataservicePlayer();
+            PlayerDTO player = dataservicePlayer.GetPlayerByID(oldBet.PlayerName)!;
+
+            if (oldBet != null)
             {
-                oldBet.Amount = amount;
-                oldBet.Date = utcDate;
-                db.SaveChanges();
-                return GetBetById(oldBet.Bid); ;
+                if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
+                {
+                    oldBet.Amount = amount;
+                    oldBet.Date = utcDate;
+                    db.SaveChanges();
+                    return GetBetById(oldBet.Bid); ;
+                }
+                else return null;
             }
             else
             {

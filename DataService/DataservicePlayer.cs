@@ -32,9 +32,10 @@ namespace DataLayer
                 })
                 .FirstOrDefault(x => x.PlayerName == name);
 
+            if (player != null)
             return player;
+            else return null;
         }
-
 
         public Player? GetPlayerObject(String name)
         {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataLayer;
+using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
@@ -22,69 +23,132 @@ namespace WebServer.Controllers
 
 
         [HttpGet("all", Name = nameof(GetBets))]
-        public IActionResult GetBets(int page = 0, int pageSize = 20)
+        public IActionResult GetBets(bool includePaging = false, int page = 0, int pageSize = 20)
         {
-            var bets = _dataServiceBets.GetBets(page, pageSize);
-            if (bets == null)
+            if (includePaging)
             {
-                return NotFound();
+                var bets = _dataServiceBets.GetBetsWithPaging(page, pageSize);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
+
+                var total = _dataServiceBets.GetNumberOfBets();
+
+                return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBets)));
             }
-            var betsModel = CreateBetsModel(bets);
+            else
+            {
+                var bets = _dataServiceBets.GetBets();
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
+                var total = _dataServiceBets.GetNumberOfBets();
 
-            var total = _dataServiceBets.GetNumberOfBets();
-
-            return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBets)));
-
+                return Ok(betsModel);
+            }
         }
 
         [HttpGet("Both", Name = nameof(GetBetsFromPlayerAndGame))]
-        public IActionResult GetBetsFromPlayerAndGame(GetBetsPlayerGameModel betModel, int page = 0, int pageSize = 20)
+        public IActionResult GetBetsFromPlayerAndGame(GetBetsPlayerGameModel betModel, bool includePaging = false, int page = 0, int pageSize = 20)
         {
-            var bets = _dataServiceBets.GetBetsFromPlayerAndGame(page, pageSize, betModel.PlayerName, betModel.Gid);
-            if (bets == null)
-            {
-                return NotFound();
+            if (includePaging) { 
+                var bets = _dataServiceBets.GetBetsFromPlayerAndGameWithPaging(page, pageSize, betModel.PlayerName, betModel.Gid);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
+
+                var total = _dataServiceBets.GetNumberOfBets();
+
+                return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromPlayerAndGame)));
             }
-            var betsModel = CreateBetsModel(bets);
+            else
+            {
+                var bets = _dataServiceBets.GetBetsFromPlayerAndGame(betModel.PlayerName, betModel.Gid);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
 
-            var total = _dataServiceBets.GetNumberOfBets();
+                var total = _dataServiceBets.GetNumberOfBets();
 
-            return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromPlayerAndGame)));
+                return Ok(betsModel);
+            }
 
         }
 
         [HttpGet("player/{playername}", Name = nameof(GetBetsFromPlayer))]
-        public IActionResult GetBetsFromPlayer(String playername, int page = 0, int pageSize = 20)
+        public IActionResult GetBetsFromPlayer(String playername, bool includePaging = false, int page = 0, int pageSize = 20)
         {
-            var bets = _dataServiceBets.GetBetsFromPlayer(page, pageSize, playername);
-            if (bets == null)
+            if (includePaging)
             {
-                return NotFound();
+                var bets = _dataServiceBets.GetBetsFromPlayerWithPaging(page, pageSize, playername);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
+
+                var total = _dataServiceBets.GetNumberOfBets();
+
+                return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromPlayer)));
+
             }
-            var betsModel = CreateBetsModel(bets);
+            else
+            {
+                var bets = _dataServiceBets.GetBetsFromPlayer(playername);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
 
-            var total = _dataServiceBets.GetNumberOfBets();
+                var total = _dataServiceBets.GetNumberOfBets();
 
-            return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromPlayer)));
-
+                return Ok(betsModel);
+            }
         }
+
+       
 
         [HttpGet("game/{gid}", Name = nameof(GetBetsFromGame))]
-        public IActionResult GetBetsFromGame(int gid, int page = 0, int pageSize = 20)
+        public IActionResult GetBetsFromGame(int gid, bool includePaging = false, int page = 0, int pageSize = 20)
         {
-            var bets = _dataServiceBets.GetBetsFromGame(page, pageSize, gid);
-            if (bets == null)
+            if (includePaging)
             {
-                return NotFound();
+                var bets = _dataServiceBets.GetBetsFromGameWithPaging(page, pageSize, gid);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
+
+                var total = _dataServiceBets.GetNumberOfBets();
+
+                return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromGame)));
             }
-            var betsModel = CreateBetsModel(bets);
+            else
+            {
+                var bets = _dataServiceBets.GetBetsFromGame(gid);
+                if (bets == null)
+                {
+                    return NotFound();
+                }
+                var betsModel = CreateBetsModel(bets);
 
-            var total = _dataServiceBets.GetNumberOfBets();
+                var total = _dataServiceBets.GetNumberOfBets();
 
-            return Ok(DefaultPagingModel(page, pageSize, total, betsModel, nameof(GetBetsFromGame)));
-
+                return Ok(betsModel);
+            }
+               
+            
         }
-
 
         public IList<BetsModel> CreateBetsModel(IList<BetsDTO> bets)
         {

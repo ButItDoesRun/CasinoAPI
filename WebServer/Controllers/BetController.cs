@@ -63,14 +63,5 @@ namespace WebServer.Controllers
             return Ok(updateBetModel);
         }
 
-        [NonAction]
-        public BetModel CreateBetModel(BetDTO bet)
-        {
-            var model = _mapper.Map<BetModel>(bet);
-
-            //model.Url = GenerateLink(nameof(GetBetById), new { Bid = bet.Bid });
-
-            return model;
-        }
     }
 }
