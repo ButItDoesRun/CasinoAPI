@@ -30,14 +30,14 @@ namespace DataLayer
 
             if(bet != null) return bet; 
 
-            return null; 
+            return null!; 
         }
         public BetDTO CreateBet(string playername, int gid, double? amount)
         {
             using var db = new CasinoDBContext();
 
             DataserviceGame dataServiceGame = new DataserviceGame();
-            Game game = dataServiceGame.GetGame(gid);
+            Game game = dataServiceGame.GetGame(gid)!;
 
             if(game.MaxBet >= amount && game.MinBet <= amount)
             {
@@ -55,7 +55,7 @@ namespace DataLayer
             }
             else {
                 
-                return null;
+                return null!;
             }
 
            
@@ -65,7 +65,7 @@ namespace DataLayer
         public BetDTO UpdateBet(int bid, double amount)
         {
             using var db = new CasinoDBContext();
-            var oldBet = db.Bets.Where(x => x.Bid == bid).FirstOrDefault();
+            var oldBet = db.Bets!.Where(x => x.Bid == bid).FirstOrDefault();
 
             if(oldBet != null)
             {
@@ -76,7 +76,7 @@ namespace DataLayer
             }
             else
             {
-                return null;
+                return null!;
             }
 
         }
@@ -92,7 +92,7 @@ namespace DataLayer
             {
                 return false;
             }
-            db.Bets?.Remove(GetBet(bid));
+            db.Bets?.Remove(GetBet(bid)!);
             db.SaveChanges();
             return true;
         }

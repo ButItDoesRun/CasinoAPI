@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +25,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("create", Name = nameof(CreateGame))]
-        public IActionResult CreateGame(GameCreateModel createModel, bool includePot = true, bool includeBets = false, bool includePlayers = false)
+        public IActionResult CreateGame(GameCreateModel createModel, bool includePot = false, bool includeBets = false)
         {
             try
             {
@@ -34,7 +35,7 @@ namespace WebServer.Controllers
 
                 var game = _dataserviceGame.CreateGame(createModel.Name, (double)createModel.MinBet, (double)createModel.MaxBet);
                 if (game == null) return BadRequest();
-                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
+                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets);
 
                 return Ok(gameRecordModel);
             }
@@ -48,7 +49,7 @@ namespace WebServer.Controllers
 
 
         [HttpGet("get/{gid}", Name = nameof(GetGame))]
-        public IActionResult GetGame(int gid, bool includePot = true, bool includeBets = false, bool includePlayers = false)
+        public IActionResult GetGame(int gid, bool includePot = false, bool includeBets = false)
         {
             try
             {
@@ -56,7 +57,7 @@ namespace WebServer.Controllers
                 var game = _dataserviceGame.GetGameById(gid);
                 if (game == null) return NotFound();
 
-                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
+                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets);
 
                 return Ok(gameRecordModel);
             }
@@ -68,7 +69,7 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("update/{gid}", Name = nameof(UpdateGame))]
-        public IActionResult UpdateGame(int gid, GameUpdateModel updateModel, bool includePot = true, bool includeBets = false, bool includePlayers = false)
+        public IActionResult UpdateGame(int gid, GameUpdateModel updateModel, bool includePot = false, bool includeBets = false)
         {
             try
             {
@@ -79,7 +80,7 @@ namespace WebServer.Controllers
                 var game = _dataserviceGame.UpdateGame(gid, updateModel.Name, (double)updateModel.MinBet, (double)updateModel.MaxBet);
                 if (game == null) return NotFound();
 
-                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets, includePlayers);
+                var gameRecordModel = ConstructGameRecordModel(game, includePot, includeBets);
 
                 return Ok(gameRecordModel);
             }
@@ -107,48 +108,61 @@ namespace WebServer.Controllers
         }
 
         [NonAction]
-        private object ConstructGameRecordModel(GameDTO game, bool includePot, bool includeBet, bool includePlayer)
-        {
-            var gameModel = ConstructGameModel(game);
+        private object ConstructGameRecordModel(GameDTO game, bool includePot, bool includeBet)
+        {            
 
-            PotModel? potModel = null;
-            if (includePot)
+            var gameModel = ConstructGameModel(game);
+            if (includePot || includeBet)
             {
-                var pot = _dataservicePot.GetGamePot(game.Gid);
-                potModel = (pot != null) ? ConstructPotModel(pot) : null;
-                //if the game doesn't have a pot, we provide an option to create one.
-                if (potModel == null)
+                PotModel? potModel = null;
+                if (includePot)
                 {
-                    potModel = new PotModel();
-                    var potCreateModel = new PotCreateModel();
-                    potModel.CreatePotUrl = GenerateUrlModel(nameof(PotController.CreatePot), new { gid = game.Gid }, potCreateModel);
+                    var pot = _dataservicePot.GetGamePot(game.Gid);
+                    potModel = (pot != null) ? ConstructPotModel(pot) : null;
+                    //if the game doesn't have a pot, we provide an option to create one.
+                    if (potModel == null)
+                    {
+                        potModel = new PotModel();
+                        var potCreateModel = new PotCreateModel();
+                        potModel.CreatePotUrl = GenerateUrlModel(nameof(PotController.CreatePot), new { gid = game.Gid }, potCreateModel);
+                    }
+
                 }
 
-                Console.WriteLine("Pot will be included");
-            }
-            if (includeBet)
-            {
-                Console.WriteLine("Bets will be included");
-            }
-            if (includePlayer)
-            {
-                Console.WriteLine("Players will be included");
-            }
+                IList<BetModel>? betsModel = null;
+                if (includeBet)
+                {
+                    var bets = _dataserviceBets.GetGameBets(game.Gid);
+                    betsModel = (bets != null) ? bets.Select(bet => ConstructBetModel(bet)).ToList() : null;
+                    //if the game doesn't have a bet, we provide an option to create one.
+                    if (betsModel == null || !betsModel.Any())
+                    {
+                        BetModel betModel = new BetModel();
+                        var betCreateModel = new BetCreateModel();
+                        betModel.CreateBetUrl = GenerateUrlModel(nameof(BetController.CreateBet), new {}, betCreateModel);
 
-            var gameRecordModel = ConstructGameRecordObject(gameModel, potModel, null, null);
+                        var betModelList = new List<BetModel>();
+                        betModelList.Add(betModel);
+                        betsModel = betModelList;
+                    }
+                }
 
-            return gameRecordModel;
+                var gameRecordModel = ConstructGameRecordObject(gameModel, potModel, betsModel);
+
+                return gameRecordModel;
+            }
+            
+            return gameModel;
         }
 
         [NonAction]
-        object ConstructGameRecordObject(GameModel game, PotModel? pot, BetModel? bet, PlayerModel? player)
+        object ConstructGameRecordObject(GameModel game, PotModel? pot, IList<BetModel>? bets)
         {
             object gameRecord = new
             {
                 Game = game,
                 Pot = pot,
-                Bet = bet,
-                Player = player
+                Bets = bets,
             };
             return gameRecord;
         }

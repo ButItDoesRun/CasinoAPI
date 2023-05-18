@@ -5,6 +5,7 @@ using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.IO;
 using WebServer.Model;
 using WebServer.Services;
@@ -17,10 +18,16 @@ namespace WebServer.Controllers
     {
         private readonly IDataservicePlayer _dataServicePlayer;
         private readonly Hashing _hashing;
+        private readonly IDataserviceGame _dataserviceGame;
+        private readonly IDataserviceMoneyPot _dataservicePot;
+        private readonly IDataserviceBets _dataserviceBets;
 
-        public PlayerController(IDataservicePlayer dataServicePlayer, LinkGenerator generator, Hashing hashing, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public PlayerController(IDataservicePlayer dataServicePlayer, IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, Hashing hashing, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
             _dataServicePlayer = dataServicePlayer;
+            _dataserviceGame = dataserviceGame;
+            _dataserviceBets = dataserviceBets;
+            _dataservicePot = dataservicePot;
             _hashing = hashing;
         }
 
@@ -71,16 +78,18 @@ namespace WebServer.Controllers
 
 
         [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
-        public IActionResult GetPlayerByID(String name)
+        public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
         {
-            var specificPlayer = _dataServicePlayer.GetPlayerByID(name);
-            if (specificPlayer == null)
+            var player = _dataServicePlayer.GetPlayerByID(name);
+            if (player == null)
             {
                 return NotFound();
             }
             //var specificPlayerModel = _mapper.Map<PlayerModel>(specificPlayer);
 
-            var specificPlayerModel = ConstructPlayerModel(specificPlayer);
+            //var specificPlayerModel = ConstructPlayerModel(specificPlayer);
+
+            var specificPlayerModel = ConstructGameRecordModel(player, includeGame, includePot, includeBet);            
             return Ok(specificPlayerModel);
         }
 
@@ -219,6 +228,117 @@ namespace WebServer.Controllers
             }
 
             return playersModel;
+        }
+
+
+
+        //PLAYER RECORD MODEL
+                
+        [NonAction]
+        private object ConstructGameRecordModel(PlayerDTO player, bool includeGame, bool includePot, bool includeBet)
+        {
+            var playerModel = ConstructPlayerModel(player);
+            IList<PlayerGamesModel>? playerGamesModel = null!;
+            //IList<PlayerGamesModel> playerGamesModel;
+
+            
+
+            if (includeGame)
+            {                
+                var playergames = _dataServicePlayer.GetPlayerGames(playerModel.PlayerName!);       
+                               
+                if (playergames == null) return BadRequest("No games connected to this player");
+
+                playerGamesModel = new List<PlayerGamesModel>();
+
+                foreach (var game in playergames!)
+                {
+                    var playerGame = _mapper.Map<PlayerGamesModel>(game);                    
+
+                    IList<BetModel>? betsModel = null;
+
+                    if (!includeBet && !includePot)
+                    {
+                        playerGame.PotAmount = null; //un-includes the pot                                         
+                    }
+
+                    if (!includePot)
+                    {
+                        playerGame.PotAmount = null; //un-includes the pot  
+
+                    }
+
+
+                    if (includeBet)
+                    {
+                        var bets = _dataserviceBets.GetPlayerBets(playerModel.PlayerName!, game.Gid);
+                        
+                        betsModel = (bets != null) ? bets.Select(bet => ConstructBetModel(bet)).ToList() : null;
+
+                        playerGame.Bets = betsModel;                        
+
+                        //if the game doesn't have a bet, we provide an option to create one.
+                        if (betsModel == null || !betsModel.Any())
+                        {
+                            BetModel betModel = new BetModel();
+                            var betCreateModel = new BetCreateModel();
+                            betModel.CreateBetUrl = GenerateUrlModel(nameof(BetController.CreateBet), new { }, betCreateModel);
+
+                            var betModelList = new List<BetModel>();
+                            betModelList.Add(betModel);
+                            betsModel = betModelList;
+
+                            playerGame.Bets = betsModel;
+
+                        }
+                        
+                    }                  
+
+
+                  try
+                    {                     
+
+                        if (playerGame != null) {                            
+                            playerGamesModel.Add(playerGame);
+
+                            Console.WriteLine(playerGame.Name);
+
+
+
+                        }
+                    }catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        return Unauthorized();
+                    }
+
+
+                }             
+
+
+                var playerRecordModel = ConstructPlayerRecordObject(playerModel, playerGamesModel);
+
+                return playerRecordModel;
+
+            }
+
+            return playerModel;
+
+        }
+                
+
+        
+               
+
+        [NonAction]
+        object ConstructPlayerRecordObject(PlayerModel player, IList<PlayerGamesModel>? games)
+        {
+            object playerRecord = new
+            {
+                Player = player,
+                Games = games,
+            };
+            return playerRecord;
         }
 
 

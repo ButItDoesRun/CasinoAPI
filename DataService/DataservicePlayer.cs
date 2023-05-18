@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -207,6 +208,37 @@ namespace DataLayer
             return (int)result;
 
         }
+
+
+        //GAME LIST               
         
+        public IList<GamesDTO>? GetPlayerGames(string playername)
+        {
+            using var db = new CasinoDBContext();
+
+            var playerGames = db.Bets?
+                .Include(x => x.Game)
+                .ThenInclude(x => x!.MoneyPot)
+                .Where(x => x.PlayerName!.Equals(playername))
+                .Select(x => new GamesDTO {
+                    Gid = x.Gid,
+                    Name = x.Game!.Name,
+                    MinBet = x.Game.MinBet,
+                    MaxBet = x.Game.MaxBet,
+                    Pid = x.Game.Pid,
+                    PotAmount = x.Game!.MoneyPot!.Amount,
+                })
+                .GroupBy(x => x.Gid).Select(y => y.First()).Distinct()
+                .ToList();
+
+            if (playerGames == null) return null;
+
+            return playerGames;
+        }
+
+        
+
+        
+
     }
 }

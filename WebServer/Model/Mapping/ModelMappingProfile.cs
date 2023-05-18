@@ -24,6 +24,7 @@ namespace WebServer.Model.Mapping
             CreateMap<PlayerDTO, PlayerBalanceUpdateModel>();
             CreateMap<PlayerDTO, PlayerUpdateModel>();
             CreateMap<PlayersDTO, PlayersModel>();
+            CreateMap<GamesDTO, PlayerGamesModel>();
 
             //Bet mapping
             CreateMap<BetsDTO, BetsModel>();

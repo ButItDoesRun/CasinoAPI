@@ -23,4 +23,16 @@
         public double? Balance { get; set; }
     }
 
+
+    public class PlayerGamesModel
+    {
+        //game
+        public string? Name { get; set; }
+        public double? MinBet { get; set; }
+        public double? MaxBet { get; set; }
+        public double? PotAmount { get; set; }
+        public IList<BetModel>? Bets { get; set; }
+
+    }
+
 }
