@@ -38,9 +38,9 @@ namespace WebServer.Controllers
         }
 
         [HttpGet("Both", Name = nameof(GetBetsFromPlayerAndGame))]
-        public IActionResult GetBetsFromPlayerAndGame(String playername, int gid, int page = 0, int pageSize = 20)
+        public IActionResult GetBetsFromPlayerAndGame(GetBetsPlayerGameModel betModel, int page = 0, int pageSize = 20)
         {
-            var bets = _dataServiceBets.GetBetsFromPlayerAndGame(page, pageSize, playername, gid);
+            var bets = _dataServiceBets.GetBetsFromPlayerAndGame(page, pageSize, betModel.PlayerName, betModel.Gid);
             if (bets == null)
             {
                 return NotFound();
