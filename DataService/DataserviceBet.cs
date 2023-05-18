@@ -54,7 +54,7 @@ namespace DataLayer
                 return GetBetById(newBet.Bid);
             }
             else {
-                
+
                 return null!;
             }
 

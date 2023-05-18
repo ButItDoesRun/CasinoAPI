@@ -35,7 +35,9 @@ namespace WebServer.Controllers
         [HttpGet("create", Name = nameof(CreateBet))]
         public IActionResult CreateBet(BetCreateModel createModel)
         {
-            var bet = _dataServiceBet.CreateBet(createModel.PlayerName, createModel.Gid, createModel.Amount);
+            var bet = _dataServiceBet.CreateBet(createModel.PlayerName!, createModel.Gid, createModel.Amount);
+
+            if (bet == null) return BadRequest();
             var createBetModel = ConstructBetModel(bet);
             return Ok(createBetModel);
         }   
