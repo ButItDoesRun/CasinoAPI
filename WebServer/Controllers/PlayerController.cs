@@ -117,6 +117,28 @@ namespace WebServer.Controllers
             }
         }
 
+        
+
+        [HttpGet("update/{playername}/{amount}", Name = nameof(AddWinOrLossToPlayerBalance))]
+        public IActionResult AddWinOrLossToPlayerBalance(string playername, double? amount)
+        {
+            try
+            {
+                if (amount == null) return BadRequest();
+
+                var balanceIsUpdated = _dataServicePlayer.AddWinOrLossToPlayerBalance(playername, amount);
+                if(balanceIsUpdated) return Ok();
+                else return BadRequest();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Unauthorized();
+            }
+        }
+        
+
 
         [HttpGet("delete/{playername}", Name = nameof(DeletePlayer))]
         public IActionResult DeletePlayer(string playername)

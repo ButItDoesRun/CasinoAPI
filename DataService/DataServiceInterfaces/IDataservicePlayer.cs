@@ -15,11 +15,12 @@ namespace DataLayer.DataServiceInterfaces
         public PlayerDTO? GetPlayerByID(String name);
         public bool CreatePlayer(string playername, string password, DateOnly birthdate, double balance, string ssalt);
         public bool PlayerExists(string playername);
-        public PlayerDTO? UpdatePlayerBalance(string playername, double amount);
+        public PlayerDTO? UpdatePlayerBalance(string playername, double? amount);
         public double? GetPlayerBalance(String playername);
         public Player? GetPlayerObject(String name);
         public bool DeletePlayer(string playername);
         public PlayerDTO UpdatePlayer(string playername, string newHash, string newSalt, DateOnly newBirthdate);
         public IList<GamesDTO>? GetPlayerGames(string playername);
+        public bool AddWinOrLossToPlayerBalance(string playername, double? amount);
     }
 }

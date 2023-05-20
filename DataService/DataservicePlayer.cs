@@ -109,7 +109,7 @@ namespace DataLayer
 
 
 
-        public PlayerDTO? UpdatePlayerBalance(string playername, double amount)
+        public PlayerDTO? UpdatePlayerBalance(string playername, double? amount)
         {
             using var db = new CasinoDBContext();
             var updatedBalance = db.Players?
@@ -122,6 +122,22 @@ namespace DataLayer
                 .FirstOrDefault();
             if (updatedBalance != null) return updatedBalance;
             return null;
+        }
+
+        public bool AddWinOrLossToPlayerBalance(string playername, double? amount)
+        {
+            using var db = new CasinoDBContext();
+
+            var currentBalance = GetPlayerBalance(playername);
+            Console.WriteLine(currentBalance);
+
+            var newBalance = currentBalance + amount;
+
+            PlayerDTO? playerBalance = UpdatePlayerBalance(playername, newBalance);
+
+            if (playerBalance!.Balance != newBalance) return false;
+
+            return true;
         }
 
 
