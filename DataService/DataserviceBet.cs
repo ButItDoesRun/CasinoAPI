@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
+
 namespace DataLayer
 {
     public class DataserviceBet : IDataserviceBet
@@ -37,70 +38,84 @@ namespace DataLayer
         {
             using var db = new CasinoDBContext();
 
+            using var transaction = db.Database.BeginTransaction();
+
             DataserviceGame dataServiceGame = new DataserviceGame();
             Game game = dataServiceGame.GetGame(gid)!;
 
-            DataservicePlayer dataservicePlayer = new DataservicePlayer();
-            Player player = dataservicePlayer.GetPlayerObject(playername)!;
+            DataservicePlayer dataservicePlayer = new DataservicePlayer();  
 
-            if(player == null)
+            try 
             {
-                return null!;
-            }
+                var player = db.Players!.Where(x => x.PlayerName == playername).FirstOrDefault();
 
-            if((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
-            {
-                Bet newBet = new Bet()
+                if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
                 {
-                    PlayerName = playername,
-                    Gid = gid,
-                    Amount = amount,
-                    Date = utcDate
-                };
+                    Bet newBet = new Bet()
+                    {
+                        PlayerName = playername,
+                        Gid = gid,
+                        Amount = amount,
+                        Date = utcDate
+                    };
 
-                db.Bets?.Add(newBet);
-                db.SaveChanges();
-                return GetBetById(newBet.Bid);
+                    player.Balance = player.Balance - amount;
+                    db.SaveChanges();
+
+                    db.Bets?.Add(newBet);
+                    db.SaveChanges();
+
+                    transaction.Commit();
+
+                    return GetBetById(newBet.Bid);
+
+                }
+                else return null!;
             }
-            else {
+            catch (Exception ex) { return null!; }
 
-                return null!;
-            }
-
-           
 
         }
 
         public BetDTO UpdateBet(int bid, double amount)
         {
             using var db = new CasinoDBContext();
-            var oldBet = db.Bets!.Where(x => x.Bid == bid).FirstOrDefault();
 
-            if(oldBet == null) return null!;
+            using var transaction = db.Database.BeginTransaction();
 
-            DataserviceGame dataServiceGame = new DataserviceGame();
-            Game game = dataServiceGame.GetGame(oldBet.Gid)!;
-
-            if (oldBet.PlayerName == null) return null!;
-
-            DataservicePlayer dataservicePlayer = new DataservicePlayer();
-            PlayerDTO player = dataservicePlayer.GetPlayerByID(oldBet.PlayerName)!;
-
-            if (oldBet != null)
+            try
             {
-                if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
+                var oldBet = db.Bets!.Where(x => x.Bid == bid).FirstOrDefault();
+
+                if (oldBet == null) return null!;
+
+                DataserviceGame dataServiceGame = new DataserviceGame();
+                Game game = dataServiceGame.GetGame(oldBet.Gid)!;
+
+                if (oldBet.PlayerName == null) return null!;
+
+                DataservicePlayer dataservicePlayer = new DataservicePlayer();
+                var player = db.Players!.Where(x => x.PlayerName == oldBet.PlayerName).FirstOrDefault();
+
+                if (oldBet != null)
                 {
-                    oldBet.Amount = amount;
-                    oldBet.Date = utcDate;
-                    db.SaveChanges();
-                    return GetBetById(oldBet.Bid); ;
+                    if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
+                    {
+                        oldBet.Amount = amount;
+                        oldBet.Date = utcDate;
+                        player.Balance = player.Balance - amount;
+                        db.SaveChanges();
+
+                        transaction.Commit();
+
+                        return GetBetById(oldBet.Bid); ;
+                    }
+                    else return null;
                 }
-                else return null;
+                else return null!;
             }
-            else
-            {
-                return null!;
-            }
+            catch (Exception ex) { return null!; }
+
 
         }
 
