@@ -12,6 +12,7 @@ namespace DataLayer.DataTransferModel
         public DateOnly? BirthDate { get; set; }
         public string? Password { get; set; }
         public double? Balance { get; set; }
+        public bool IsDeveloper { get; set; }
 
     }
 }

@@ -84,6 +84,7 @@ namespace DataLayer
             modelBuilder.Entity<Player>().Property(x => x.BirthDate).HasColumnName("birthdate");
             modelBuilder.Entity<Player>().Property(x => x.Password).HasColumnName("password");
             modelBuilder.Entity<Player>().Property(x => x.Balance).HasColumnName("balance");
+            modelBuilder.Entity<Player>().Property(x => x.IsDeveloper).HasColumnName("isdeveloper");
 
             //BETS
             modelBuilder.Entity<Bet>().ToTable("bets");

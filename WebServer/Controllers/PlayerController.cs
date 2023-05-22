@@ -6,6 +6,7 @@ using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NpgsqlTypes;
 using System.IO;
 using WebServer.Model;
 using WebServer.Services;
@@ -36,7 +37,7 @@ namespace WebServer.Controllers
 
 
         [HttpPost("post/{playername}/{password}")]
-        public IActionResult Register(string playername, string password, string birthdate = "")
+        public IActionResult PlayerRegistration(string playername, string password, string birthdate = "")
         {
             DateOnly birthDate;
 
@@ -72,6 +73,35 @@ namespace WebServer.Controllers
             var created = _dataServicePlayer.CreatePlayer(playername, hashResult.hash,birthDate, balance, hashResult.salt);
             if (!created) return BadRequest();
             return Ok();
+        }
+
+
+
+        [HttpPost("post/login")]
+        public IActionResult Login(PlayerLoginModel model)
+        {
+            var player = _dataServicePlayer.GetPlayerByID(model.PlayerName!);
+            var salt = _dataServicePlayer.GetPlayerSalt(player!.PlayerName!);
+
+            if(player == null) return BadRequest();
+
+            if(!_hashing.Verify(model.Password!,player.Password!, salt.SSalt!)) BadRequest();
+
+            string role;
+
+            if (player.IsDeveloper)
+            {
+                role = "developer";
+            }
+            else
+            {
+                role = "player";
+
+            }
+
+            var jwt = GenerateJwtToken(player.PlayerName!, role);
+
+            return Ok(new { player.PlayerName, token = jwt });
         }
 
 

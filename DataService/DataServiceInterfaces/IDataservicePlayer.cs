@@ -22,5 +22,6 @@ namespace DataLayer.DataServiceInterfaces
         public PlayerDTO UpdatePlayer(string playername, string newHash, string newSalt, DateOnly newBirthdate);
         public IList<GamesDTO>? GetPlayerGames(string playername);
         public bool AddWinOrLossToPlayerBalance(string playername, double? amount);
+        public Salt GetPlayerSalt(string playername);
     }
 }

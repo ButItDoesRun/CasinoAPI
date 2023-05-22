@@ -11,7 +11,8 @@ namespace DataLayer.DatabaseModel.CasinoModel
         public string? PlayerName { get; set; }
         public DateOnly? BirthDate { get; set; }
         public string? Password { get; set; }
-        public double? Balance { get; set; }   
+        public double? Balance { get; set; }  
+        public bool IsDeveloper { get; set; }
         
         //references
         public IList<Bet>? Bet { get; set; }

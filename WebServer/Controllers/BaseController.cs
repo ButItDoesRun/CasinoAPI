@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WebServer.Model;
 
@@ -90,21 +91,30 @@ namespace WebServer.Controllers
         }
 
         [NonAction]
-        public string? GenerateJwtToken(string username)
+        public string? GenerateJwtToken(string username, string role)
         {
-            var claims = new List<Claim>{
-                new Claim(ClaimTypes.Name, username),
+            var issuer = _configuration["Jwt:Issuer"];
+            var audience = _configuration["Jwt:Audience"];
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);  
+            var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescription = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, username),
+                    new Claim(ClaimTypes.Role, role),
+                }),
+                Expires = DateTime.Now.AddMinutes(30),
+                Issuer = issuer,
+                Audience = audience,
+                SigningCredentials = creds,
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Auth:secret").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescription);
+            var jwtToken = tokenHandler.WriteToken(token);
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
+            return jwtToken;
         }
 
 

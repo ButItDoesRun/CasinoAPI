@@ -28,7 +28,8 @@ namespace DataLayer
                     PlayerName = x.PlayerName,
                     Balance = x.Balance,
                     BirthDate = x.BirthDate,
-                    Password = x.Password
+                    Password = x.Password,
+                    IsDeveloper = x.IsDeveloper
                 })
                 .FirstOrDefault(x => x.PlayerName == name);
 
@@ -77,6 +78,14 @@ namespace DataLayer
             var player = db.Players?.FirstOrDefault(x => x.PlayerName == playername);
             if (player == null) return false;
             return true;
+        }
+
+        public Salt GetPlayerSalt(string playername)
+        {
+            using var db = new CasinoDBContext();
+            var salt = db.Salts?.FirstOrDefault(x => x.PlayerName == playername);
+            if (salt == null) return null!;
+            return salt;
         }
 
         public bool CreatePlayer(string playername, string password, DateOnly birthdate, double balance, string ssalt)

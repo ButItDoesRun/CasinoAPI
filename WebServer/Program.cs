@@ -21,18 +21,24 @@ builder.Services.AddSingleton<IDataserviceGame, DataserviceGame>();
 builder.Services.AddSingleton<IDataservicePlayer, DataservicePlayer>();
 builder.Services.AddSingleton<IDataserviceBet, DataserviceBet>();
 
-//Other services
+/*Auto Mapper*/
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+/*Hashing*/
 builder.Services.AddSingleton<Hashing>();
+
+/*JWT Authentication*/
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
         opt.TokenValidationParameters = new TokenValidationParameters
         {
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),               
+            ValidateIssuer = true,
+            ValidateAudience = true,           
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Auth:secret").Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
             ClockSkew = TimeSpan.Zero
         };
     });

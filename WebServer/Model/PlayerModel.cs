@@ -6,6 +6,7 @@
         public string? Password { get; set; }
         public double? Balance { get; set; }
         public DateOnly? BirthDate { get; set; }
+        public bool IsDeveloper { get; set; }
 
         public UrlModel? UpdatePlayerUrl { get; set; }
         public UrlModel? UpdatePlayerBalanceUrl { get; set; }
@@ -34,5 +35,14 @@
         public IList<BetModel>? Bets { get; set; }
 
     }
+
+
+    public class PlayerLoginModel
+    {
+        public string? PlayerName { get; set; }
+        public string? Password { get; set; }
+
+    }
+
 
 }
