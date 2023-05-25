@@ -57,8 +57,6 @@ builder.Services.AddControllers()
 
 builder.WebHost.UseUrls("http://*:5001", "https://localhost:5001");
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
