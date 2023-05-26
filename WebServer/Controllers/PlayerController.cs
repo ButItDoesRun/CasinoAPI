@@ -4,10 +4,15 @@ using DataLayer;
 using DataLayer.DatabaseModel.CasinoModel;
 using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.IO;
+using System.Security.Claims;
 using WebServer.Model;
 using WebServer.Services;
 
@@ -107,20 +112,32 @@ namespace WebServer.Controllers
 
 
 
+     
         [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
+        [Authorize]
         public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
-        {
-            var player = _dataServicePlayer.GetPlayerByID(name);
-            if (player == null)
+        {      
+           try
             {
-                return NotFound();
+                var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+
+                Console.WriteLine(test);
+
+                var player = _dataServicePlayer.GetPlayerByID(name);
+                if (player == null)
+                {
+                    return NotFound();
+                }
+
+                var specificPlayerModel = ConstructGameRecordModel(player, includeGame, includePot, includeBet);
+                return Ok(specificPlayerModel);
+
+
             }
-            //var specificPlayerModel = _mapper.Map<PlayerModel>(specificPlayer);
-
-            //var specificPlayerModel = ConstructPlayerModel(specificPlayer);
-
-            var specificPlayerModel = ConstructGameRecordModel(player, includeGame, includePot, includeBet);            
-            return Ok(specificPlayerModel);
+            catch
+            {
+                return Unauthorized();
+            }
         }
 
 

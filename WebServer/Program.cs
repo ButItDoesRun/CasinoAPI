@@ -1,6 +1,8 @@
 using DataLayer;
 using DataLayer.DataServiceInterfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebServer.Services;
@@ -8,6 +10,7 @@ using WebServer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -31,17 +34,24 @@ builder.Services.AddSingleton<Hashing>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
     {
+        opt.RequireHttpsMetadata = false;
+        opt.SaveToken = true;
         opt.TokenValidationParameters = new TokenValidationParameters
         {
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),               
-            ValidateIssuer = true,
-            ValidateAudience = true,           
             ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Auth:secret").Value)),
+            ValidateIssuer = true,
+            ValidateAudience = false,
             ClockSkew = TimeSpan.Zero
         };
+        
     });
+
+builder.Services.AddAuthorization();
+
+
 
 builder.Services.AddCors(options =>
 {
@@ -55,6 +65,7 @@ builder.Services.AddCors(options =>
 });
 
 
+/*DateTime Converter */
 builder.Services.AddControllers()
                .AddJsonOptions(options =>
                {

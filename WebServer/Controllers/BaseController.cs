@@ -95,26 +95,25 @@ namespace WebServer.Controllers
         {
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);  
-            var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature);
-
-            var tokenDescription = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, role),
-                }),
-                Expires = DateTime.Now.AddMinutes(30),
-                Issuer = issuer,
-                Audience = audience,
-                SigningCredentials = creds,
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Auth:secret").Value));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);           
+            
+            var claims = new List<Claim>{
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role),
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescription);
-            var jwtToken = tokenHandler.WriteToken(token);
 
-            return jwtToken;
+            var token = new JwtSecurityToken(
+                issuer: issuer, 
+                audience: audience, 
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+          
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+
         }
 
 
