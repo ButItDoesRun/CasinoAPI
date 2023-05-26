@@ -21,10 +21,10 @@ namespace DataLayer
         //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=postgres";
 
         //atru - localhost database
-        //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=Bqm33etj";
+        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=Bqm33etj";
 
         //raroni - localhost database
-        const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=password";
+        //const string ConnectionString = "host=localhost;db=casino;uid=postgres;pwd=password";
 
         /* CASINO MODEL */
         public DbSet<Game>? Games { get; set; }
