@@ -12,6 +12,13 @@
         public UrlModel? DeletePlayerUrl { get; set; }
     }
 
+    public class PlayerCreateModel
+    {
+        public string? PlayerName { get; set; }
+        public string? Password { get; set; }
+        public string? BirthDate { get; set; }
+    }
+
     public class PlayerUpdateModel
     {
         public string? Password { get; set; }
