@@ -83,7 +83,7 @@ namespace WebServer.Controllers
         }
 
 
-        [HttpPost("post/login")]
+        [HttpGet("post/login")]
         public IActionResult Login(PlayerLoginModel model)
         {
             var player = _dataServicePlayer.GetPlayerByID(model.PlayerName!);
