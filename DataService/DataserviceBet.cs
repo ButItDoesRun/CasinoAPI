@@ -43,9 +43,9 @@ namespace DataLayer
             DataserviceGame dataServiceGame = new DataserviceGame();
             Game game = dataServiceGame.GetGame(gid)!;
 
-            DataservicePlayer dataservicePlayer = new DataservicePlayer();  
+            DataservicePlayer dataservicePlayer = new DataservicePlayer();
 
-            try 
+            try
             {
                 var player = db.Players!.Where(x => x.PlayerName == playername).FirstOrDefault();
 
@@ -73,6 +73,7 @@ namespace DataLayer
                 else return null!;
             }
             catch (Exception ex) { return null!; }
+            
 
 
         }

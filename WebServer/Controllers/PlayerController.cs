@@ -43,9 +43,9 @@ namespace WebServer.Controllers
         public IActionResult RegisterUser(PlayerCreateModel player)
         {
             DateOnly birthDate;
-            string playername = player.PlayerName;
-            string password = player.Password;
-            string birthdate = player.BirthDate;
+            string playername = player.PlayerName!;
+            string password = player.Password!;
+            string birthdate = player.BirthDate!;
 
             //playername and password cannot be null
             if (playername.IsNullOrEmpty()) return BadRequest();
@@ -161,9 +161,9 @@ namespace WebServer.Controllers
         {      
            try
             {
-                var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+                //var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
 
-                Console.WriteLine(test);
+                //Console.WriteLine(test);
 
                 var player = _dataServicePlayer.GetPlayerByID(name);
                 if (player == null)

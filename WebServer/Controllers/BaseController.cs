@@ -94,24 +94,44 @@ namespace WebServer.Controllers
         public string? GenerateJwtToken(string username, string role)
         {
             var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Auth:secret").Value));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);           
-            
-            var claims = new List<Claim>{
+            var audience = _configuration["Jwt:Audience"];   
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var expires = DateTime.Now.AddMinutes(30);
+
+            //var claims = new List<Claim>{
+            //    new Claim(ClaimTypes.Name, username),
+            //    new Claim(ClaimTypes.Role, role),
+            //};
+
+            var subject = new ClaimsIdentity(new[] 
+            { 
                 new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, role),
+            });
+
+
+            var tokenDescriptor = new SecurityTokenDescriptor{
+                Subject = subject,
+                Expires = expires,
+                Issuer = issuer,
+                Audience = audience,
+                SigningCredentials = creds
             };
 
 
-            var token = new JwtSecurityToken(
-                issuer: issuer, 
-                audience: audience, 
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds);
-          
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            //var token = new JwtSecurityToken(
+            //    issuer: issuer, 
+            //    audience: audience,                 
+            //    claims: claims,
+            //    expires: DateTime.Now.AddMinutes(30),
+            //    signingCredentials: creds);
+
+            //var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
             return jwt;
 
         }
