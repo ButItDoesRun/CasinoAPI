@@ -37,18 +37,17 @@ builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; 
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+   
 })
     .AddJwtBearer(opt =>
-    {
+    {      
         opt.RequireHttpsMetadata = false;
-        //opt.SaveToken = true;
-        opt.Authority = builder.Configuration.GetValue<string>("Jwt:Authority");
         opt.TokenValidationParameters = new TokenValidationParameters
         {
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value)),
             ValidateIssuer = true,
             ValidateAudience = false,
             ValidateLifetime = false,      
@@ -57,18 +56,6 @@ builder.Services.AddAuthentication(opt =>
         };
         
     });
-
-//builder.Services.AddAuthorization();
-//builder.Services.AddAuthorization(auth =>
-//{
-//    auth.AddPolicy("Bearer", new AuthorizationPolicyBuilder()
-//        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
-//        .RequireAuthenticatedUser().Build());
-//});
-
-// Add configuration from appsettings.json
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddEnvironmentVariables();
 
 
 
@@ -93,7 +80,7 @@ builder.Services.AddControllers()
                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
                });
 
-builder.WebHost.UseUrls("http://*:5001", "https://localhost:5001");
+//builder.WebHost.UseUrls("https://*:5001", "https://localhost:5001");
 
 var app = builder.Build();
 
@@ -107,8 +94,6 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
-IConfiguration configuration = app.Configuration;
-IWebHostEnvironment environment = app.Environment;
 
 app.MapControllers();
 app.Run();

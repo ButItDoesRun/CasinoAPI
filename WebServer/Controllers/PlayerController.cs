@@ -156,14 +156,14 @@ namespace WebServer.Controllers
 
      
         [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
-        [Authorize]
+        [Authorize(Roles = "player")]
         public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
         {      
            try
             {
-                //var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+                var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
 
-                //Console.WriteLine(test);
+                Console.WriteLine(test);
 
                 var player = _dataServicePlayer.GetPlayerByID(name);
                 if (player == null)
