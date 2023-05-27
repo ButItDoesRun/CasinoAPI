@@ -83,47 +83,6 @@ namespace WebServer.Controllers
         }
 
 
-        [HttpPost("post/{playername}/{password}")]
-        public IActionResult PlayerRegistration(string playername, string password, string birthdate = "")
-        {
-            DateOnly birthDate;
-
-            //playername and password cannot be null
-            if (playername.IsNullOrEmpty()) return BadRequest();
-            if (password.IsNullOrEmpty()) return BadRequest();
-            
-            //balance is always set to 0 for a new player
-            double balance = 0;
-
-            //cheking if the birthdate parameter can be converted to a DateOnly object
-            //if false, a standard date is assigned
-            if (DateOnly.TryParse(birthdate, out DateOnly result))
-            { 
-                birthDate = DateOnly.Parse(birthdate);
-            }
-            else
-            {
-                birthDate = new DateOnly(1990,01,01);
-            }
-
-
-            //username must be unique
-            if (_dataServicePlayer.PlayerExists(playername)) return BadRequest();
-
-            //password must have a minimum length of 8.
-            const int minimumPasswordLength = 8;
-            if (password.Length < minimumPasswordLength) return BadRequest();
-
-            //password is hashed
-            var hashResult = _hashing.Hash(password);
-
-            var created = _dataServicePlayer.CreatePlayer(playername, hashResult.hash,birthDate, balance, hashResult.salt);
-            if (!created) return BadRequest();
-            return Ok();
-        }
-
-
-
         [HttpPost("post/login")]
         public IActionResult Login(PlayerLoginModel model)
         {
@@ -156,7 +115,6 @@ namespace WebServer.Controllers
 
      
         [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
-        [Authorize(Roles = "player")]
         public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
         {      
            try
