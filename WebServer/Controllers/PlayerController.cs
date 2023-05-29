@@ -83,7 +83,7 @@ namespace WebServer.Controllers
         }
 
 
-        [HttpGet("post/login")]
+        [HttpGet("login")]
         public IActionResult Login(PlayerLoginModel model)
         {
             var player = _dataServicePlayer.GetPlayerByID(model.PlayerName!);
@@ -115,6 +115,7 @@ namespace WebServer.Controllers
 
      
         [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
+        [Authorize]
         public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
         {      
            try
