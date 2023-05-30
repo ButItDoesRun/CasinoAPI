@@ -27,63 +27,75 @@ namespace WebServer.Controllers
         private readonly IDataserviceGame _dataserviceGame;
         private readonly IDataserviceMoneyPot _dataservicePot;
         private readonly IDataserviceBets _dataserviceBets;
+        private readonly Authentication _authentication;
 
-        public PlayerController(IDataservicePlayer dataServicePlayer, IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, Hashing hashing, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public PlayerController(IDataservicePlayer dataServicePlayer, IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, Hashing hashing, Authentication authentication, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
         {
             _dataServicePlayer = dataServicePlayer;
             _dataserviceGame = dataserviceGame;
             _dataserviceBets = dataserviceBets;
             _dataservicePot = dataservicePot;
             _hashing = hashing;
+            _authentication = authentication;
         }
 
 
         //COMMANDS FOR A PLAYER
         [HttpGet("create")]
-        public IActionResult RegisterUser(PlayerCreateModel player)
+        [AllowAnonymous]
+        public IActionResult RegisterPlayer(PlayerCreateModel player)
         {
+            string authMessage;
             DateOnly birthDate;
             string playername = player.PlayerName!;
             string password = player.Password!;
-            string birthdate = player.BirthDate!;
+            string birthdate = player.BirthDate!;           
 
             //playername and password cannot be null
             if (playername.IsNullOrEmpty()) return BadRequest();
-            if (password.IsNullOrEmpty()) return BadRequest();
+            if (password.IsNullOrEmpty()) return BadRequest();           
 
             //balance is always set to 50 for a new player
             double balance = 50;
 
-            //cheking if the birthdate parameter can be converted to a DateOnly object
-            //if false, a standard date is assigned
-            if (DateOnly.TryParse(birthdate, out DateOnly result))
+            if (!birthdate.IsNullOrEmpty())
             {
-                birthDate = DateOnly.Parse(birthdate);
+
+                //cheking if the birthdate parameter can be converted to a DateOnly object
+                //if false, a standard date is assigned
+                if (DateOnly.TryParse(birthdate, out DateOnly result))
+                {
+                    birthDate = DateOnly.Parse(birthdate);
+                }
+                else
+                {
+                    return BadRequest("Incorrect birthdate format");
+                }
             }
-            else
-            {
-                birthDate = new DateOnly(1990, 01, 01);
-            }
 
+            //validate playername characters                     
+            authMessage = _authentication.ValidatePlayername(player.PlayerName!);            
+            if (!authMessage.IsNullOrEmpty()) { return BadRequest(authMessage); }
+           
+            //playername must be unique
+            if (_dataServicePlayer.PlayerExists(playername)) return BadRequest("Playername must be unique");
 
-            //username must be unique
-            if (_dataServicePlayer.PlayerExists(playername)) return BadRequest();
-
-            //password must have a minimum length of 8.
-            const int minimumPasswordLength = 8;
-            if (password.Length < minimumPasswordLength) return BadRequest();
+            //validate password
+            authMessage = _authentication.ValidatePassword(player.Password!);
+            if (!authMessage.IsNullOrEmpty()) { return BadRequest(authMessage); }        
 
             //password is hashed
             var hashResult = _hashing.Hash(password);
 
             var created = _dataServicePlayer.CreatePlayer(playername, hashResult.hash, birthDate, balance, hashResult.salt);
             if (!created) return BadRequest();
-            return Ok();
+            return Ok("Player is succesfully registered!");
 
         }
 
 
         [HttpGet("login")]
+        [AllowAnonymous]
         public IActionResult Login(PlayerLoginModel model)
         {
             var player = _dataServicePlayer.GetPlayerByID(model.PlayerName!);
@@ -104,7 +116,6 @@ namespace WebServer.Controllers
                 role = "player";
 
             }
-
             var jwt = GenerateJwtToken(player.PlayerName!, role);
 
             return Ok(new { player.PlayerName, token = jwt });
@@ -112,8 +123,15 @@ namespace WebServer.Controllers
 
 
 
+        [HttpGet("update/role/{playername}", Name = nameof(MakeDev))]
+        public IActionResult MakeDev(string playername)
+        {
+            var isDev = _dataServicePlayer.MakeDeveloper(playername);
+            if (!isDev) { return BadRequest(); }          
+            return Ok();
+        }
 
-     
+
         [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
         [Authorize]
         public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
@@ -142,7 +160,7 @@ namespace WebServer.Controllers
         }
 
 
-        [HttpGet("update/{playername}", Name = nameof(UpdatePlayerBalance))]
+        [HttpGet("update/balance/{playername}", Name = nameof(UpdatePlayerBalance))]
         public IActionResult UpdatePlayerBalance(string playername, PlayerBalanceUpdateModel updateModel)
         {
             try
@@ -204,7 +222,7 @@ namespace WebServer.Controllers
             }
         }
 
-        [HttpGet("update/test/{playername}", Name = nameof(UpdatePlayer))]
+        [HttpGet("update/{playername}", Name = nameof(UpdatePlayer))]
         public IActionResult UpdatePlayer(string playername, PlayerUpdateModel updateModel)
         {
             try

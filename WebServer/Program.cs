@@ -31,6 +31,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 /*Hashing*/
 builder.Services.AddSingleton<Hashing>();
+builder.Services.AddSingleton<Authentication>();
 
 /*JWT Authentication*/
 builder.Services.AddAuthentication(opt => 

@@ -23,5 +23,6 @@ namespace DataLayer.DataServiceInterfaces
         public IList<GamesDTO>? GetPlayerGames(string playername);
         public bool AddWinOrLossToPlayerBalance(string playername, double? amount);
         public Salt GetPlayerSalt(string playername);
+        public bool MakeDeveloper(string playername);
     }
 }

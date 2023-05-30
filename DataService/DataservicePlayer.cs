@@ -47,7 +47,8 @@ namespace DataLayer
                     PlayerName = x.PlayerName,
                     Balance = x.Balance,
                     BirthDate = x.BirthDate,
-                    Password = x.Password
+                    Password = x.Password,
+                    IsDeveloper = x.IsDeveloper
                 })
                 .FirstOrDefault(x => x.PlayerName == name);
 
@@ -113,6 +114,21 @@ namespace DataLayer
             db.SaveChanges();
 
             if (PlayerExists(playername)) return true;
+            return false;
+        }
+
+        public bool MakeDeveloper(string playername)
+        {
+            using var db = new CasinoDBContext();
+            var player = GetPlayerObject(playername);        
+            player!.IsDeveloper = true;           
+
+            db.Players?.Update(player);     
+            db.SaveChanges();
+
+            var update = GetPlayerObject(playername);
+
+            if (update!.IsDeveloper) return true;
             return false;
         }
 
