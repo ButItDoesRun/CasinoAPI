@@ -80,7 +80,7 @@ builder.Services.AddControllers()
                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
                });
 
-//builder.WebHost.UseUrls("https://*:5001", "https://localhost:5001");
+builder.WebHost.UseUrls("https://*:5001", "https://localhost:5001");
 
 var app = builder.Build();
 
