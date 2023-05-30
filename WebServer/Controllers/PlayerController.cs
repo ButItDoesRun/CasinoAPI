@@ -119,9 +119,8 @@ namespace WebServer.Controllers
         {      
            try
             {
-                var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
-
-                Console.WriteLine(test);
+                //var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+                //Console.WriteLine(test);
 
                 var player = _dataServicePlayer.GetPlayerByID(name);
                 if (player == null)
