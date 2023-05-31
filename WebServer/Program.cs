@@ -31,7 +31,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 /*Hashing*/
 builder.Services.AddSingleton<Hashing>();
+
+/*user authentication*/
 builder.Services.AddSingleton<Authentication>();
+
+/*Whitelist*/
+builder.Services.Configure<IPWhitelistOptions>(builder.Configuration.GetSection("IPWhitelistOptions"));
+
 
 /*JWT Authentication*/
 builder.Services.AddAuthentication(opt => 
@@ -59,42 +65,22 @@ builder.Services.AddAuthentication(opt =>
     });
 
 
-
-
-
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy =>
-        {
-            policy.WithOrigins("*")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
-
-
-
-
-
+//CORS with named policy and middleware
 /*The specified URL must not contain a trailing slash (/). 
  * If the URL terminates with /, the comparison returns false 
  * and no header is returned.*/
-
-/*
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://example.com",
-                                              "http://www.CoinPusher.dk")
-                          .AllowCredentials();
+                          policy.WithOrigins("https://localhost:5001",
+                              "https://coinpusher.dk")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
                       });
 });
 
-*/
 
 /*DateTime Converter */
 builder.Services.AddControllers()
@@ -103,7 +89,8 @@ builder.Services.AddControllers()
                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
                });
 
-//builder.WebHost.UseUrls("https://*:5001", "https://localhost:5001");
+//Specifies URL the webhost listens on
+builder.WebHost.UseUrls("https://*:5001", "https://localhost:5001");
 
 var app = builder.Build();
 
@@ -112,9 +99,13 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
-//app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseIPWhitelist();
 
 app.UseAuthentication();
 app.UseAuthorization();
