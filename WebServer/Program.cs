@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebServer.Services;
+using Microsoft.Extensions.Logging.Console;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,15 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+//Logging for monitoring 
+
+builder.Host.ConfigureLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+});
+
 
 
 //DATASERVICES
@@ -109,6 +119,9 @@ app.UseIPWhitelist();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Logger.LogInformation("Starting the app");
+
 
 app.MapControllers();
 app.Run();

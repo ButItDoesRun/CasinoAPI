@@ -97,7 +97,7 @@ namespace WebServer.Controllers
         [HttpGet("login")]
         [AllowAnonymous]
         public IActionResult Login(PlayerLoginModel model)
-        {
+        {            
             var player = _dataServicePlayer.GetPlayerByID(model.PlayerName!);
             var salt = _dataServicePlayer.GetPlayerSalt(player!.PlayerName!);
 
