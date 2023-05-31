@@ -1,12 +1,14 @@
-﻿using DataLayer.DataServiceInterfaces;
+﻿using AutoMapper;
+using DataLayer.DataServiceInterfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace WebServer.Services
 {
     public class Authentication
-    {      
+    {         
 
         public string ValidatePlayername(string playername)
         {      

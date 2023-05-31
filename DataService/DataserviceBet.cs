@@ -49,7 +49,7 @@ namespace DataLayer
             {
                 var player = db.Players!.Where(x => x.PlayerName == playername).FirstOrDefault();
 
-                if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
+                if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player?.Balance)
                 {
                     Bet newBet = new Bet()
                     {
@@ -72,7 +72,10 @@ namespace DataLayer
                 }
                 else return null!;
             }
-            catch (Exception ex) { return null!; }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return null!; 
+            }
             
 
 
@@ -100,7 +103,7 @@ namespace DataLayer
 
                 if (oldBet != null)
                 {
-                    if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player.Balance)
+                    if ((game.MaxBet >= amount && game.MinBet <= amount) && amount < player?.Balance)
                     {
                         oldBet.Amount = amount;
                         oldBet.Date = utcDate;
@@ -111,11 +114,14 @@ namespace DataLayer
 
                         return GetBetById(oldBet.Bid); ;
                     }
-                    else return null;
+                    else return null!;
                 }
                 else return null!;
             }
-            catch (Exception ex) { return null!; }
+            catch (Exception e) { 
+                Console.WriteLine(e.Message);
+                return null!; 
+            }
 
 
         }

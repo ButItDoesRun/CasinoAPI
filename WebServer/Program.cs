@@ -62,6 +62,7 @@ builder.Services.AddAuthentication(opt =>
 
 
 
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -73,6 +74,27 @@ builder.Services.AddCors(options =>
         });
 });
 
+
+
+
+
+/*The specified URL must not contain a trailing slash (/). 
+ * If the URL terminates with /, the comparison returns false 
+ * and no header is returned.*/
+
+/*
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://example.com",
+                                              "http://www.CoinPusher.dk")
+                          .AllowCredentials();
+                      });
+});
+
+*/
 
 /*DateTime Converter */
 builder.Services.AddControllers()
@@ -90,6 +112,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
+//app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
 

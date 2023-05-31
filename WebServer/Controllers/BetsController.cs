@@ -16,7 +16,7 @@ namespace WebServer.Controllers
 
         private readonly IDataserviceBets _dataServiceBets;
 
-        public BetsController(IDataserviceBets dataServiceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public BetsController(IDataserviceBets dataServiceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration, IDataservicePlayer dataServicePlayer) : base(generator, mapper, configuration, dataServicePlayer)
         {
             _dataServiceBets = dataServiceBets;
         }

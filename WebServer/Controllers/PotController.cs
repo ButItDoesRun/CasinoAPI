@@ -15,7 +15,7 @@ namespace WebServer.Controllers
     {
         private readonly IDataserviceMoneyPot _dataservicePot;
 
-        public PotController(IDataserviceMoneyPot dataservicePot, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public PotController(IDataserviceMoneyPot dataservicePot, LinkGenerator generator, IMapper mapper, IConfiguration configuration, IDataservicePlayer dataServicePlayer) : base(generator, mapper, configuration, dataServicePlayer)
         {
             _dataservicePot = dataservicePot;
         }

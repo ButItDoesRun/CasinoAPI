@@ -20,6 +20,7 @@ namespace WebServer.Controllers
 {
     [Route("casino/player")]
     [ApiController]
+    [Authorize]
     public class PlayerController : BaseController
     {
         private readonly IDataservicePlayer _dataServicePlayer;
@@ -29,7 +30,7 @@ namespace WebServer.Controllers
         private readonly IDataserviceBets _dataserviceBets;
         private readonly Authentication _authentication;
 
-        public PlayerController(IDataservicePlayer dataServicePlayer, IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, Hashing hashing, Authentication authentication, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public PlayerController(IDataservicePlayer dataServicePlayer, IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, Hashing hashing, Authentication authentication, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration, dataServicePlayer)
         {
             _dataServicePlayer = dataServicePlayer;
             _dataserviceGame = dataserviceGame;
@@ -37,8 +38,7 @@ namespace WebServer.Controllers
             _dataservicePot = dataservicePot;
             _hashing = hashing;
             _authentication = authentication;
-        }
-
+        }     
 
         //COMMANDS FOR A PLAYER
         [HttpGet("create")]
@@ -122,8 +122,7 @@ namespace WebServer.Controllers
         }
 
 
-
-        [HttpGet("update/role/{playername}", Name = nameof(MakeDev))]
+        [HttpGet("update/role/{playername}", Name = nameof(MakeDev))]    
         public IActionResult MakeDev(string playername)
         {
             var isDev = _dataServicePlayer.MakeDeveloper(playername);
@@ -131,18 +130,17 @@ namespace WebServer.Controllers
             return Ok();
         }
 
+        //[Authorize(Roles = "player,developer")]
 
-        [HttpGet("get/{name}", Name = nameof(GetPlayerByID))]
-        [Authorize]
-        public IActionResult GetPlayerByID(String name, bool includeGame = false, bool includePot = false, bool includeBet = false)
+        [HttpGet("get/{playername}", Name = nameof(GetPlayerByID))]        
+        public IActionResult GetPlayerByID(String playername, bool includeGame = false, bool includePot = false, bool includeBet = false)
         {      
            try
             {
-                var test = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+                var isAuthorized = PlayerAuthorization(playername);
+                if (!isAuthorized) { return Unauthorized();}
 
-                Console.WriteLine(test);
-
-                var player = _dataServicePlayer.GetPlayerByID(name);
+                var player = _dataServicePlayer.GetPlayerByID(playername);
                 if (player == null)
                 {
                     return NotFound();
@@ -164,7 +162,10 @@ namespace WebServer.Controllers
         public IActionResult UpdatePlayerBalance(string playername, PlayerBalanceUpdateModel updateModel)
         {
             try
-            {
+            {               
+                var isAuthorized = DevAuthorization(playername);               
+                if (!isAuthorized) { return Unauthorized(); }
+
                 if (updateModel.Balance == null) return BadRequest();
 
                 var balance = _dataServicePlayer.UpdatePlayerBalance(playername, (double)updateModel.Balance);
@@ -190,6 +191,9 @@ namespace WebServer.Controllers
         {
             try
             {
+                var isAuthorized = DevAuthorization(playername);
+                if (!isAuthorized) { return Unauthorized(); }
+
                 if (amount == null) return BadRequest();
 
                 var balanceIsUpdated = _dataServicePlayer.AddWinOrLossToPlayerBalance(playername, amount);
@@ -211,6 +215,9 @@ namespace WebServer.Controllers
         {
             try
             {
+                var isAuthorized = PlayerAuthorization(playername);
+                if (!isAuthorized) { return Unauthorized(); }
+
                 var deleted = _dataServicePlayer.DeletePlayer(playername);
                 if (deleted == false) return NotFound();
                 return Ok();
@@ -227,6 +234,9 @@ namespace WebServer.Controllers
         {
             try
             {
+                var isAuthorized = PlayerAuthorization(playername);
+                if (!isAuthorized) { return Unauthorized(); }
+
                 DateOnly birthDate;
                 const int minimumPasswordLength = 8;
 
@@ -274,7 +284,7 @@ namespace WebServer.Controllers
         {
 
             try
-            {
+            {               
                 var players = _dataServicePlayer.GetPlayers(page, pageSize);
                 if (players == null)
                 {

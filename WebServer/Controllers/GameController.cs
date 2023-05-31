@@ -17,7 +17,7 @@ namespace WebServer.Controllers
         private readonly IDataserviceMoneyPot _dataservicePot;
         private readonly IDataserviceBets _dataserviceBets;
 
-        public GameController(IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration) : base(generator, mapper, configuration)
+        public GameController(IDataserviceGame dataserviceGame, IDataserviceMoneyPot dataservicePot, IDataserviceBets dataserviceBets, LinkGenerator generator, IMapper mapper, IConfiguration configuration, IDataservicePlayer dataServicePlayer) : base(generator, mapper, configuration, dataServicePlayer)
         {
             _dataserviceGame = dataserviceGame;
             _dataserviceBets = dataserviceBets;

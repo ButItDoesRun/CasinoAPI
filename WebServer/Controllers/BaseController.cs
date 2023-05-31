@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using DataLayer;
 using DataLayer.DatabaseModel.CasinoModel;
+using DataLayer.DataServiceInterfaces;
 using DataLayer.DataTransferModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,16 +16,19 @@ namespace WebServer.Controllers
 {
     public abstract class BaseController : ControllerBase
     {
+        private readonly IDataservicePlayer _dataServicePlayer;
         protected readonly LinkGenerator _generator;
         protected readonly IMapper _mapper;
         protected readonly IConfiguration _configuration;
         protected const int MaxPageSize = 30;
+        
 
-        protected BaseController(LinkGenerator generator, IMapper mapper, IConfiguration configuration)
-        {
+        protected BaseController(LinkGenerator generator, IMapper mapper, IConfiguration configuration, IDataservicePlayer dataServicePlayer)
+        {           
             _generator = generator;
             _mapper = mapper;
             _configuration = configuration;
+            _dataServicePlayer = dataServicePlayer;
         }
 
         //Link functions
@@ -120,6 +125,64 @@ namespace WebServer.Controllers
             return jwt;
 
         }
+
+
+        //Authorization
+        public bool PlayerAuthorization(string playername)
+        {
+            bool isValid = false;
+            //gets playername from token
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)!.Value;
+            //checks if valid player
+            var player = _dataServicePlayer.GetPlayerByID(user);
+            if (player == null) { return isValid; }
+            //checks for role
+            var role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+            if (role.IsNullOrEmpty()) { return isValid; }
+
+            if (role.Equals("developer"))
+            {                
+                var isAuthorized = DevAuthorization(playername);                
+                if (isAuthorized) { isValid = true; }                
+            }
+            else
+            {               
+                //ensures that the player can only request her/his own information
+                if (!player.PlayerName!.Equals(playername)) { return isValid; }               
+                if (role.Equals("player")) isValid = true;
+
+            }        
+                     
+
+            return isValid;
+
+        }
+
+        //allows only devs access, but unlike players they can request other users information
+        public bool DevAuthorization(string playername)
+        {
+            bool isValid = false;
+            //gets playername from token
+            var user = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)!.Value;
+            //checks if valid player
+            var player = _dataServicePlayer.GetPlayerByID(user);
+            if (player == null) { return isValid; }
+
+            //checks for access authorization at developerlevel
+            var role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)!.Value;
+            if (role.IsNullOrEmpty()) { return isValid; }
+            if (role.Equals("developer")) isValid = true;
+
+            //denies acces to information on other devs
+            var reqPlayer = _dataServicePlayer.GetPlayerByID(playername);
+            if(reqPlayer == null) { isValid = false; }         
+            if (reqPlayer!.IsDeveloper) { isValid = false; }
+
+
+            return isValid;
+        }
+
+
 
 
         [NonAction]

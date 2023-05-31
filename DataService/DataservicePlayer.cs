@@ -53,7 +53,7 @@ namespace DataLayer
                 .FirstOrDefault(x => x.PlayerName == name);
 
             return player;
-        }
+        } 
 
 
         public double? GetPlayerBalance(String playername)
